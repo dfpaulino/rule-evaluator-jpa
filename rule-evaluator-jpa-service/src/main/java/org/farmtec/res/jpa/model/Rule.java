@@ -1,8 +1,6 @@
 package org.farmtec.res.jpa.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,7 +10,9 @@ import javax.persistence.*;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-public class Rules extends BaseTable{
+@EqualsAndHashCode
+@ToString
+public class Rule extends BaseTable{
     private String name;
     private int priority;
     @OneToOne(cascade = CascadeType.ALL)

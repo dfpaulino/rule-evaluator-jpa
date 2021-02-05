@@ -1,9 +1,6 @@
 package org.farmtec.res.jpa.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Entity;
 
@@ -14,6 +11,7 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @Getter @Setter
 @ToString
+@EqualsAndHashCode
 public class PredicateLeaf extends BaseTable {
     private String type;
     private String operation;

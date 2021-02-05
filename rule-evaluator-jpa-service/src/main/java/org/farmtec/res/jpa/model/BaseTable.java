@@ -14,9 +14,9 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
-public class BaseTable {
+public class    BaseTable {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
     private Date createTime;
     private Date updateTime;

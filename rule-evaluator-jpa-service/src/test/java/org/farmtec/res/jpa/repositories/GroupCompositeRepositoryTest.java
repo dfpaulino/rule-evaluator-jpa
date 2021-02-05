@@ -14,8 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GroupCompositeRepositoryTest {
 
     @Autowired
-    EntityManager entityManager;
+    TestEntityManager entityManager;
     @Autowired
     private GroupCompositeRepository groupCompositeRepository;
     @Autowired

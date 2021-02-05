@@ -1,9 +1,6 @@
 package org.farmtec.res.jpa.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -15,6 +12,7 @@ import java.util.Set;
 @Getter @Setter
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class GroupComposite extends BaseTable {
     private String logicalOperation;
     @ManyToMany(cascade = CascadeType.ALL)
