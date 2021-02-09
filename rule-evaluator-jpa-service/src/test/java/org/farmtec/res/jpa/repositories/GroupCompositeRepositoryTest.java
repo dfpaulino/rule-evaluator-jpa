@@ -101,7 +101,8 @@ class GroupCompositeRepositoryTest {
                 () -> assertThat(fetched.get(0).getPredicateLeaves().size()).isEqualTo(2),
                 //p1 is in a managed state, so should have an Id
                 () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p1)).isTrue(),
-                () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p2)).isTrue()
+                () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p2)).isTrue(),
+                () -> assertThat(fetched.get(0).getGroupComposites()).isNull()
         );
     }
 
@@ -122,7 +123,8 @@ class GroupCompositeRepositoryTest {
                 () -> assertThat(fetched.get(0).getPredicateLeaves().size()).isEqualTo(2),
                 //p3 is in a managed state, so should have an Id
                 () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p3)).isTrue(),
-                () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p4)).isTrue()
+                () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p4)).isTrue(),
+                () -> assertThat(fetched.get(0).getGroupComposites()).isNull()
         );
     }
 
@@ -138,14 +140,14 @@ class GroupCompositeRepositoryTest {
 
         assertAll(
                 () -> assertThat(fetched.size()).isEqualTo(3),
-                () -> assertThat(fetched.contains(G1)),
-                () -> assertThat(fetched.contains(G11)),
-                () -> assertThat(fetched.contains(G12)),
+                () -> assertThat(fetched.contains(G1)).isTrue(),
+                () -> assertThat(fetched.contains(G11)).isTrue(),
+                () -> assertThat(fetched.contains(G12)).isTrue(),
                 () -> assertThat(groupCompositeRepository.findById(G1.getId()).get().getLogicalOperation()).isEqualTo("OR"),
-                () -> assertThat(groupCompositeRepository.findById(G1.getId()).get().getGroupComposites().contains(G11)),
-                () -> assertThat(groupCompositeRepository.findById(G1.getId()).get().getGroupComposites().contains(G12)),
+                () -> assertThat(groupCompositeRepository.findById(G1.getId()).get().getGroupComposites().contains(G11)).isTrue(),
+                () -> assertThat(groupCompositeRepository.findById(G1.getId()).get().getGroupComposites().contains(G12)).isTrue(),
+                () -> assertThat(groupCompositeRepository.findById(G1.getId()).get().getPredicateLeaves()).isNull(),
                 () -> assertThat(predicateLeafRepository.count()).isEqualTo(4)
-
         );
     }
 }

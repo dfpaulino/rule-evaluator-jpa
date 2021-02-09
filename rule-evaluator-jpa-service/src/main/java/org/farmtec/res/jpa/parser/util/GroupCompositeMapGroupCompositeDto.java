@@ -20,16 +20,28 @@ public class GroupCompositeMapGroupCompositeDto {
         if(groupComposite!=null) {
             groupCompositeDto.setOperation(groupComposite.getLogicalOperation());
 
-            List<String> groupCompositeNames = groupComposite.getGroupComposites().size()>0?
-                    groupComposite.getGroupComposites().stream()
-                            .map(gp ->  GROUP_PREFIX+gp.getId())
-                            .collect(Collectors.toList())
-                    :new ArrayList<>();
-            List<String> predicatesName = groupComposite.getPredicateLeaves().size()>0?
-                    groupComposite.getPredicateLeaves().stream()
-                            .map(p ->  PREDICATE_PREFIX+p.getId())
-                            .collect(Collectors.toList())
-                    :new ArrayList<>();
+            List<String> groupCompositeNames;
+            if(null != groupComposite.getGroupComposites()) {
+                groupCompositeNames = groupComposite.getGroupComposites().size()>0?
+                        groupComposite.getGroupComposites().stream()
+                                .map(gp ->  GROUP_PREFIX+gp.getId())
+                                .collect(Collectors.toList())
+                        :new ArrayList<>();
+            } else {
+                groupCompositeNames = new ArrayList<>();
+            }
+
+
+            List<String> predicatesName;
+            if(null != groupComposite.getPredicateLeaves()) {
+                predicatesName = groupComposite.getPredicateLeaves().size()>0?
+                        groupComposite.getPredicateLeaves().stream()
+                                .map(p ->  PREDICATE_PREFIX+p.getId())
+                                .collect(Collectors.toList())
+                        :new ArrayList<>();
+            } else {
+                predicatesName = new ArrayList<>();
+            }
 
             groupCompositeNames.addAll(predicatesName);
 
