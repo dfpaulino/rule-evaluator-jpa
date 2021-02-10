@@ -85,8 +85,11 @@ class GroupCompositeMapGroupCompositeDtoTest {
 
         //then
         assertAll(
+                () -> assertThat(dto).isNotNull(),
+                () -> assertThat(dto).isInstanceOf(GroupCompositeDto.class),
                 () -> assertThat(dto.getPredicateNames()).containsExactlyInAnyOrder("G_1","G_2"),
-                () -> assertThat(dto.getOperation()).isEqualTo(gp1.getLogicalOperation())
+                () -> assertThat(dto.getOperation()).isEqualTo(gp1.getLogicalOperation()),
+                () -> assertThat(dto.isComplete()).isTrue()
         );
     }
     @Test
@@ -98,8 +101,11 @@ class GroupCompositeMapGroupCompositeDtoTest {
 
         //then
         assertAll(
+                () -> assertThat(dto).isNotNull(),
+                () -> assertThat(dto).isInstanceOf(GroupCompositeDto.class),
                 () -> assertThat(dto.getPredicateNames()).containsExactlyInAnyOrder("P_1","P_2"),
-                () -> assertThat(dto.getOperation()).isEqualTo(gp11.getLogicalOperation())
+                () -> assertThat(dto.getOperation()).isEqualTo(gp11.getLogicalOperation()),
+                () -> assertThat(dto.isComplete()).isTrue()
         );
     }
 
@@ -112,8 +118,26 @@ class GroupCompositeMapGroupCompositeDtoTest {
 
         //then
         assertAll(
+                () -> assertThat(dto).isNotNull(),
+                () -> assertThat(dto).isInstanceOf(GroupCompositeDto.class),
                 () -> assertThat(dto.getPredicateNames()).containsExactlyInAnyOrder("P_3","P_4"),
-                () -> assertThat(dto.getOperation()).isEqualTo(gp12.getLogicalOperation())
+                () -> assertThat(dto.getOperation()).isEqualTo(gp12.getLogicalOperation()),
+                () -> assertThat(dto.isComplete()).isTrue()
                 );
+    }
+
+    @Test
+    void groupCompositeToGroupCompositeDto_WhenIsNull() {
+        //given
+        //the groups on setUp
+        //when
+        GroupCompositeDto dto = GroupCompositeMapGroupCompositeDto.groupCompositeToGroupCompositeDto(null);
+
+        //then
+        assertAll(
+                () -> assertThat(dto).isNotNull(),
+                () -> assertThat(dto).isInstanceOf(GroupCompositeDto.class),
+                () -> assertThat(dto.isComplete()).isFalse()
+        );
     }
 }
