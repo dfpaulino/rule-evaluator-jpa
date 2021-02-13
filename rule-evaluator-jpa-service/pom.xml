@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.farmtec</groupId>
+    <!--groupId>org.farmtec</groupId-->
     <artifactId>rule-evaluator-jpa-service</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <parent>
-        <groupId>org.farmtec.res</groupId>
+        <groupId>org.farmtec</groupId>
         <artifactId>rule-evaluator-jpa-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../rule-evaluator-jpa-parent</relativePath>
@@ -64,11 +64,7 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.3.1.Final</version>
-        </dependency>
+
     </dependencies>
 
 

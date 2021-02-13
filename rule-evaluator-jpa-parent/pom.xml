@@ -11,7 +11,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>org.farmtec.res</groupId>
+    <groupId>org.farmtec</groupId>
     <artifactId>rule-evaluator-jpa-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>rule-evaluator-jpa-parent</name>

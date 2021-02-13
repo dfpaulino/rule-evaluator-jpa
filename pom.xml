@@ -12,5 +12,7 @@
     <modules>
         <module>rule-evaluator-jpa-parent</module>
         <module>rule-evaluator-jpa-service</module>
+        <module>res-jpa-spring-boot-autoconfigure</module>
+        <module>res-jpa-spring-boot-starter</module>
     </modules>
 </project>
