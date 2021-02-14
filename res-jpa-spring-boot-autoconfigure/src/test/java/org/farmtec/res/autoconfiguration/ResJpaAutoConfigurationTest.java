@@ -7,12 +7,10 @@ import org.farmtec.res.service.rule.loader.RuleLoaderService;
 import org.farmtec.res.service.rule.loader.RuleLoaderServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.Date;
 import java.util.List;
@@ -23,9 +21,9 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 /**
  * Created by dp on 13/02/2021
  */
-
 class ResJpaAutoConfigurationTest {
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+            .withUserConfiguration(TestUserConfig.class)
             .withConfiguration(AutoConfigurations.of(ResJpaAutoConfiguration.class));
 
     @Test

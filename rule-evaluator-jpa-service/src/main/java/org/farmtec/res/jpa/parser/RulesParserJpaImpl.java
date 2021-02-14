@@ -1,6 +1,5 @@
 package org.farmtec.res.jpa.parser;
 
-import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.model.Rule;
 import org.farmtec.res.jpa.parser.util.GroupCompositeMapGroupCompositeDto;
 import org.farmtec.res.jpa.parser.util.PredicateLeafMapLeafDto;

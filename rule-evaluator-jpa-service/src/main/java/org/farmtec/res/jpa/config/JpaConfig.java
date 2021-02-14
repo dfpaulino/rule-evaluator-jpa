@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@EnableAutoConfiguration
 @EnableJpaRepositories(basePackages ="org.farmtec.res.jpa.repositories" )
 @EntityScan(basePackages = "org.farmtec.res.jpa.model")
 @ComponentScan(basePackages = "org.farmtec.res.jpa")
