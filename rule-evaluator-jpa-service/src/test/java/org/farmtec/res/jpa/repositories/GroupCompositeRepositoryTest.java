@@ -150,4 +150,61 @@ class GroupCompositeRepositoryTest {
                 () -> assertThat(predicateLeafRepository.count()).isEqualTo(4)
         );
     }
+
+    @Test
+    public void groupCompositeRemoveG11_shouldRemoveGroupAndPredicate() {
+        //GroupComposite saved = groupCompositeRepository.save(G11);
+        //System.out.println(saved.toString());
+        GroupComposite saved = entityManager.persist(G11);
+
+        //entityManager.flush();
+        List<GroupComposite> fetched = groupCompositeRepository.findAll();
+        System.out.println(fetched.toString());
+        System.out.println(p1.getId());
+        //assert that the object G11 is composed correctly
+        assertAll(
+                () -> assertThat(fetched.size()).isEqualTo(1),
+                () -> assertThat(fetched.get(0).getLogicalOperation()).isEqualTo("AND"),
+                () -> assertThat(fetched.get(0).getPredicateLeaves().size()).isEqualTo(2),
+                //p1 is in a managed state, so should have an Id
+                () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p1)).isTrue(),
+                () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p2)).isTrue()
+        );
+
+        groupCompositeRepository.deleteById(saved.getId());
+
+        assertThat(groupCompositeRepository.findById(saved.getId()).isPresent()).isFalse();
+        //assert that predicate were deleted to
+        assertThat(predicateLeafRepository.findAll().size()).isEqualTo(0);
+    }
+    @Test
+    public void groupCompositeRemoveG11_shouldRemoveGroupAndPredicateButNotG12() {
+        //GroupComposite saved = groupCompositeRepository.save(G11);
+        //System.out.println(saved.toString());
+        GroupComposite saved = entityManager.persist(G11);
+        GroupComposite saved2 = entityManager.persist(G12);
+
+        //entityManager.flush();
+        List<GroupComposite> fetched = groupCompositeRepository.findAll();
+        System.out.println(fetched.toString());
+        System.out.println(p1.getId());
+
+        //assert that the object G11 is composed correctly
+        assertAll(
+                () -> assertThat(fetched.size()).isEqualTo(2),
+                () -> assertThat(fetched.get(0).getLogicalOperation()).isEqualTo("AND"),
+                () -> assertThat(fetched.get(0).getPredicateLeaves().size()).isEqualTo(2),
+                //p1 is in a managed state, so should have an Id
+                () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p1)).isTrue(),
+                () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p2)).isTrue()
+        );
+
+        //delete G11
+        groupCompositeRepository.deleteById(saved.getId());
+        //assert that delete was done ONLY on G11 and its predicate
+        assertThat(groupCompositeRepository.findById(saved.getId()).isPresent()).isFalse();
+        //we remain with the predicates of the other G12
+        assertThat(groupCompositeRepository.findById(saved2.getId()).isPresent()).isTrue();
+        assertThat(predicateLeafRepository.findAll().size()).isEqualTo(2);
+    }
 }

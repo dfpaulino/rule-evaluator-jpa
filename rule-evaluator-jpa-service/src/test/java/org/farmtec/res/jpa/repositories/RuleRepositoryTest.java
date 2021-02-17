@@ -17,6 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
 import java.util.List;
 import java.util.Set;
 
@@ -30,12 +31,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = JpaConfig.class)
 @DataJpaTest
 @Transactional
-@Rollback(value = true)
+@Rollback
 class RuleRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
     private RulesRepository rulesRepository;
+    @Autowired
+    private GroupCompositeRepository groupCompositeRepository;
+    @Autowired
+    private PredicateLeafRepository predicateLeafRepository;
 
 
     private PredicateLeaf p1;
@@ -74,21 +79,21 @@ class RuleRepositoryTest {
         p4.setValue("999999999999999");
 
         G11 = new GroupComposite();
-        G11.setPredicateLeaves(Set.of(p1,p2));
+        G11.setPredicateLeaves(Set.of(p1, p2));
         G11.setLogicalOperation("AND");
 
         G12 = new GroupComposite();
-        G12.setPredicateLeaves(Set.of(p3,p4));
+        G12.setPredicateLeaves(Set.of(p3, p4));
         G12.setLogicalOperation("AND");
 
         G1 = new GroupComposite();
-        G1.setGroupComposites(Set.of(G11,G12));
+        G1.setGroupComposites(Set.of(G11, G12));
         G1.setLogicalOperation("OR");
     }
 
 
     @Test
-    public void persistRule(){
+    public void persistRule() {
         //given
         Rule rule = new Rule();
         rule.setName("rule_1");
@@ -105,7 +110,34 @@ class RuleRepositoryTest {
                 () -> assertThat(fetched.size()).isEqualTo(1),
                 () -> assertThat(fetched.contains(rule)).isTrue()
         );
+    }
 
+    @Test
+    public void deleteRule() {
+        //given
+        Rule rule = new Rule();
+        rule.setName("rule_1");
+        rule.setPriority(1);
+        rule.setGroupComposite(G1);
 
-        }
+        //when
+        entityManager.persist(rule);
+
+        List<Rule> fetched = rulesRepository.findAll();
+        System.out.println(rule);
+
+        assertAll(
+                () -> assertThat(fetched.size()).isEqualTo(1),
+                () -> assertThat(groupCompositeRepository.findAll()).hasSize(3),
+                () -> assertThat(predicateLeafRepository.findAll()).hasSize(4),
+                () -> assertThat(fetched.contains(rule)).isTrue()
+        );
+
+        rulesRepository.deleteById(rule.getId());
+        assertAll(
+                () -> assertThat(rulesRepository.findAll()).hasSize(0),
+                () -> assertThat(groupCompositeRepository.findAll()).hasSize(0),
+                () -> assertThat(predicateLeafRepository.findAll()).hasSize(0)
+        );
+    }
 }

@@ -31,11 +31,11 @@ class ResJpaAutoConfigurationTest {
         this.contextRunner
                 .withPropertyValues("spring.datasource.url=jdbc:h2:mem:testdb")
                 .withPropertyValues("spring.datasource.driverClassName=org.h2.Driver")
-                .run((context) ->{
-           assertThat(context.getBean("ruleLoaderService")).isNotNull();
-           assertThat(context.getBean("ruleLoaderService")).isInstanceOf(RuleLoaderServiceImpl.class);
-           assertThat(context.getBean("ruleService")).isNotNull();
-        });
+                .run((context) -> {
+                    assertThat(context.getBean("ruleLoaderService")).isNotNull();
+                    assertThat(context.getBean("ruleLoaderService")).isInstanceOf(RuleLoaderServiceImpl.class);
+                    assertThat(context.getBean("ruleService")).isNotNull();
+                });
 
     }
 
@@ -55,7 +55,7 @@ class ResJpaAutoConfigurationTest {
                 .withPropertyValues("spring.datasource.url=jdbc:h2:mem:testdb")
                 .withPropertyValues("spring.datasource.driverClassName=org.h2.Driver")
                 .withUserConfiguration(MyConfig.class)
-                .run((context) ->{
+                .run((context) -> {
                     assertThat(context).hasBean("ruleLoaderService");
                     assertThat(context.getBean("ruleLoaderService")).isInstanceOf(MyRuleLoaderService.class);
                 });
@@ -71,6 +71,7 @@ class ResJpaAutoConfigurationTest {
             return new MyRuleLoaderService();
         }
     }
+
     public static class MyRuleLoaderService implements RuleLoaderService {
 
         @Override
