@@ -17,10 +17,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.result.StatusResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -66,6 +63,7 @@ class PredicateLeafControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("links[0].rel",is("self")))
                 .andExpect(jsonPath("links[0].href  ",is("http://localhost/predicates")))
+                .andExpect(jsonPath("content",hasSize(4)))
                 .andExpect(jsonPath("content[0].id",is(1)))
                 .andExpect(jsonPath("content[0].links[0].rel",is("self")))
                 .andExpect(jsonPath("content[0].links[0].href  ",is("http://localhost/predicates/1")))
@@ -77,7 +75,7 @@ class PredicateLeafControllerTest {
 
     @Test
     void getAll_whenEmpty() throws Exception{
-        when(predicateLeafRepository.findAll()).thenReturn(Arrays.asList());
+        when(predicateLeafRepository.findAll()).thenReturn(Collections.emptyList());
         mockMvc.perform(get("/predicates"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("content",is(new ArrayList())))
