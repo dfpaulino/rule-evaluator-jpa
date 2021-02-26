@@ -106,7 +106,7 @@ class GroupCompositeRepositoryTest {
                 //p1 is in a managed state, so should have an Id
                 () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p1)).isTrue(),
                 () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p2)).isTrue(),
-                () -> assertThat(fetched.get(0).getGroupComposites()).isNull()
+                () -> assertThat(fetched.get(0).getGroupComposites().isEmpty()).isTrue()
         );
     }
 
@@ -128,7 +128,7 @@ class GroupCompositeRepositoryTest {
                 //p3 is in a managed state, so should have an Id
                 () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p3)).isTrue(),
                 () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p4)).isTrue(),
-                () -> assertThat(fetched.get(0).getGroupComposites()).isNull()
+                () -> assertThat(fetched.get(0).getGroupComposites().isEmpty()).isTrue()
         );
     }
 
@@ -150,7 +150,7 @@ class GroupCompositeRepositoryTest {
                 () -> assertThat(groupCompositeRepository.findById(G1.getId()).get().getLogicalOperation()).isEqualTo("OR"),
                 () -> assertThat(groupCompositeRepository.findById(G1.getId()).get().getGroupComposites().contains(G11)).isTrue(),
                 () -> assertThat(groupCompositeRepository.findById(G1.getId()).get().getGroupComposites().contains(G12)).isTrue(),
-                () -> assertThat(groupCompositeRepository.findById(G1.getId()).get().getPredicateLeaves()).isNull(),
+                () -> assertThat(groupCompositeRepository.findById(G1.getId()).get().getPredicateLeaves().isEmpty()).isTrue(),
                 () -> assertThat(predicateLeafRepository.count()).isEqualTo(4)
         );
     }
@@ -264,8 +264,7 @@ class GroupCompositeRepositoryTest {
         GroupComposite groupComposite = groupCompositeRepository.findById(saved.getId()).orElseThrow(() -> new RuntimeException());
         groupComposite.getPredicateLeaves().add(pToAdd);
         groupCompositeRepository.save(groupComposite);
-        entityManager.flush();
         assertThat(groupCompositeRepository.findById(saved.getId()).get().getPredicateLeaves().size()).isEqualTo(3);
-
+        assertThat(groupCompositeRepository.findById(saved.getId()).get().getPredicateLeaves().contains(pToAdd)).isTrue();
     }
 }
