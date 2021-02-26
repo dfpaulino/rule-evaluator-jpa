@@ -70,8 +70,10 @@ public class GroupCompositeController {
         GroupCompositeRepresentationModel toReturn;
         if(gcOpt.isPresent()) {
             //this is a manage entity...should save at end of scope
-            gcOpt.get().getGroupComposites().add(groupComposite);
-            toReturn = RepresentationModelConverterUtil.fromGroupComposite(gcOpt.get(), parentId);
+            GroupComposite fetchedGroup = gcOpt.get();
+            fetchedGroup.getGroupComposites().add(groupComposite);
+            //groupCompositeRepository.save(fetchedGroup);
+            toReturn = RepresentationModelConverterUtil.fromGroupComposite(groupCompositeRepository.save(fetchedGroup), parentId);
         }else {
             GroupComposite saved = groupCompositeRepository.save(groupComposite);
             toReturn = RepresentationModelConverterUtil.fromGroupComposite(saved, 0);
@@ -83,7 +85,10 @@ public class GroupCompositeController {
     @Transactional
     public GroupCompositeRepresentationModel addPredicateToGroup(@PathVariable("id") long groupId,
                                                                  @RequestBody PredicateLeaf predicateLeaf) {
+        GroupComposite groupComposite = groupCompositeRepository.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("Group not found"));
+        groupComposite.getPredicateLeaves().add(predicateLeaf);
 
-        return null;
+        return RepresentationModelConverterUtil.fromGroupComposite(groupCompositeRepository.save(groupComposite), 0);
     }
 }
