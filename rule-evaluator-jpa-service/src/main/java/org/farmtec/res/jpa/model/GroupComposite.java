@@ -1,8 +1,10 @@
 package org.farmtec.res.jpa.model;
 
+import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -14,16 +16,17 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class GroupComposite extends BaseTable {
+    @NotNull
     private String logicalOperation;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinTable(name ="group_composite_to_group_composite",
             joinColumns = @JoinColumn(name = "parent_id"),
             inverseJoinColumns = @JoinColumn(name = "child_id"))
-    private Set<GroupComposite> groupComposites;
-    @OneToMany(cascade = CascadeType.ALL)
+    private Set<GroupComposite> groupComposites = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinTable(name ="composite_to_predicate",
             joinColumns = @JoinColumn(name = "composite_id"),
             inverseJoinColumns = @JoinColumn(name = "predicate_id"))
-    private Set<PredicateLeaf> predicateLeaves;
+    private Set<PredicateLeaf> predicateLeaves = new HashSet<>();
 
 }

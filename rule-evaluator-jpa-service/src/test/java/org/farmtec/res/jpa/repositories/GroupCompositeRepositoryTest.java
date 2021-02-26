@@ -12,8 +12,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
+
+import javax.transaction.Transactional;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -72,7 +75,8 @@ class GroupCompositeRepositoryTest {
         p4.setValue("999999999999999");
 
         G11 = new GroupComposite();
-        G11.setPredicateLeaves(Set.of(p1,p2));
+        G11.setPredicateLeaves(new HashSet<>(Set.of(p1,p2)));
+
         G11.setLogicalOperation("AND");
 
         G12 = new GroupComposite();
@@ -177,6 +181,45 @@ class GroupCompositeRepositoryTest {
         //assert that predicate were deleted to
         assertThat(predicateLeafRepository.findAll().size()).isEqualTo(0);
     }
+
+    @Test
+    @Transactional
+    public void groupCompositeRemovePredicateOfG11() {
+        //GroupComposite saved = groupCompositeRepository.save(G11);
+        //System.out.println(saved.toString());
+        GroupComposite saved = entityManager.persist(G11);
+
+        //entityManager.flush();
+        List<GroupComposite> fetched = groupCompositeRepository.findAll();
+        System.out.println(fetched.toString());
+        System.out.println(p1.getId());
+        //assert that the object G11 is composed correctly
+        assertAll(
+                () -> assertThat(fetched.size()).isEqualTo(1),
+                () -> assertThat(fetched.get(0).getLogicalOperation()).isEqualTo("AND"),
+                () -> assertThat(fetched.get(0).getPredicateLeaves().size()).isEqualTo(2),
+                //p1 is in a managed state, so should have an Id
+                () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p1)).isTrue(),
+                () -> assertThat(fetched.get(0).getPredicateLeaves().contains(p2)).isTrue()
+        );
+        GroupComposite g = groupCompositeRepository.getOne(fetched.get(0).getId());
+        Iterator<PredicateLeaf> it = g.getPredicateLeaves().iterator();
+        Set<PredicateLeaf> ps =g.getPredicateLeaves();
+        System.out.println("Removing");
+        g.getPredicateLeaves().removeIf(p -> p.getId()==p1.getId());
+
+        groupCompositeRepository.save(fetched.get(0));
+        entityManager.flush();
+
+        assertThat(groupCompositeRepository.findById(fetched.get(0).getId()).isPresent()).isTrue();
+        assertThat(groupCompositeRepository.findById(fetched.get(0).getId()).get().getPredicateLeaves().size())
+                .isEqualTo(1);
+        //assert that predicate were deleted to
+        assertThat(groupCompositeRepository.findById(fetched.get(0).getId()).get().getPredicateLeaves().size())
+                .isEqualTo(1);
+        assertThat(predicateLeafRepository.findAll().size()).isEqualTo(1);
+    }
+
     @Test
     public void groupCompositeRemoveG11_shouldRemoveGroupAndPredicateButNotG12() {
         //GroupComposite saved = groupCompositeRepository.save(G11);
@@ -206,5 +249,23 @@ class GroupCompositeRepositoryTest {
         //we remain with the predicates of the other G12
         assertThat(groupCompositeRepository.findById(saved2.getId()).isPresent()).isTrue();
         assertThat(predicateLeafRepository.findAll().size()).isEqualTo(2);
+    }
+
+    @Test
+    public void addPredicateToGroup() {
+        GroupComposite saved = entityManager.persist(G11);
+        entityManager.flush();
+        PredicateLeaf pToAdd = new PredicateLeaf();
+        pToAdd.setType("integer");
+        pToAdd.setTag("tagInt");
+        pToAdd.setOperation("GTE");
+        pToAdd.setValue("40");
+
+        GroupComposite groupComposite = groupCompositeRepository.findById(saved.getId()).orElseThrow(() -> new RuntimeException());
+        groupComposite.getPredicateLeaves().add(pToAdd);
+        groupCompositeRepository.save(groupComposite);
+        entityManager.flush();
+        assertThat(groupCompositeRepository.findById(saved.getId()).get().getPredicateLeaves().size()).isEqualTo(3);
+
     }
 }
