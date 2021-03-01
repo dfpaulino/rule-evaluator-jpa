@@ -27,7 +27,6 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.farmtec</groupId>
 			<artifactId>res-jpa-spring-boot-starter</artifactId>

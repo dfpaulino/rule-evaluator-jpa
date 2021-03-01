@@ -5,6 +5,7 @@ import org.farmtec.res.jpa.controller.representationModel.RepresentationModelCon
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.repositories.GroupCompositeRepository;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/groups")
-
 public class GroupCompositeController {
 
     private final GroupCompositeRepository groupCompositeRepository;

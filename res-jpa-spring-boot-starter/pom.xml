@@ -37,6 +37,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.farmtec</groupId>
+            <artifactId>rule-evaluator-jpa-controller</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
