@@ -49,12 +49,15 @@ public class RuleController {
         Rule rule = rulesRepository.findByName(name).orElseThrow(() -> new RuntimeException("Rule Not Found"));
         return RepresentationModelConverterUtil.ruleToRuleModel(rule);
     }
-
-    @PostMapping
-    public CollectionModel<EntityModel<SimpleRuleDto>> addRule(@RequestBody Rule rule) {
-
-    }
     */
+    //TODO add validation of payload
+    @PostMapping
+    public RuleRepresentationModel addRule(@RequestBody Rule rule) {
+
+        Rule saved = rulesRepository.save(rule);
+        return RepresentationModelConverterUtil.ruleToRuleModel(saved);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteRuleById(@PathVariable("id") long id) {
         rulesRepository.deleteById(id);

@@ -1,5 +1,6 @@
 package org.farmtec.res.jpa.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.model.Rule;
@@ -7,7 +8,9 @@ import org.farmtec.res.jpa.repositories.RulesRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -15,9 +18,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.*;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,6 +80,7 @@ class RuleControllerTest {
 
         when(rulesRepository.findAll()).thenReturn(new ArrayList<>(List.of(rule1,rule2)));
         when(rulesRepository.findById(1L)).thenReturn(Optional.of(rule1));
+
     }
 
     private void setPredicates() {
@@ -168,6 +172,91 @@ class RuleControllerTest {
     }
 
     @Test
-    void deleteRuleById() {
+    void deleteRuleById()  throws Exception{
+        mockMvc.perform(delete("/rules/1"))
+                .andExpect(status().isOk())
+                .andDo(print());
+        verify(rulesRepository,times(1)).deleteById(1L);
     }
+    @Test
+    void addRule() throws Exception {
+        //given
+        when(rulesRepository.save(ArgumentMatchers.any(Rule.class))).thenReturn(rule1);
+        ObjectMapper mapper = new ObjectMapper();
+        String rule = mapper.writeValueAsString(rule1);
+        System.out.println("["+rule+"]");
+        String content = "{\n" +
+                "   \"name\":\"Rule_1\",\n" +
+                "   \"priority\":1,\n" +
+                "   \"groupComposite\":{\n" +
+                "      \"logicalOperation\":\"OR\",\n" +
+                "      \"groupComposites\":[\n" +
+                "         {\n" +
+                "            \"logicalOperation\":\"AND\",\n" +
+                "            \"predicateLeaves\":[\n" +
+                "               {\n" +
+                "                  \"type\":\"string\",\n" +
+                "                  \"operation\":\"EQ\",\n" +
+                "                  \"tag\":\"tagStr2\",\n" +
+                "                  \"value\":\"water\"\n" +
+                "               },\n" +
+                "               {\n" +
+                "                  \"type\":\"long\",\n" +
+                "                  \"operation\":\"GTE\",\n" +
+                "                  \"tag\":\"tag2\",\n" +
+                "                  \"value\":\"999999999999999\"\n" +
+                "               }\n" +
+                "            ]\n" +
+                "         },\n" +
+                "         {\n" +
+                "            \"logicalOperation\":\"AND\",\n" +
+                "            \"predicateLeaves\":[\n" +
+                "               {\n" +
+                "                  \"type\":\"string\",\n" +
+                "                  \"operation\":\"CONTAINS\",\n" +
+                "                  \"tag\":\"tagStr\",\n" +
+                "                  \"value\":\"spring\"\n" +
+                "               },\n" +
+                "               {\n" +
+                "                  \"type\":\"integer\",\n" +
+                "                  \"operation\":\"EQ\",\n" +
+                "                  \"tag\":\"tag\",\n" +
+                "                  \"value\":\"123\"\n" +
+                "               }\n" +
+                "            ]\n" +
+                "         }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "}";
+
+        mockMvc.perform(post("/rules").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.name").isString())
+                .andExpect(jsonPath("$.name",containsString("Rule")))
+                .andExpect(jsonPath("$.priority").isNumber())
+                .andExpect(jsonPath("$.group.logicalOperation",is("OR")))
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content",hasSize(2)))
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].logicalOperation",is("AND")))
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content",hasSize(2)))
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].id").isNumber())
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].type").isString())
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].operation").isString())
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].tag").isString())
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].value").isString())
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].links[0].href",containsString("http://localhost/predicates/")))
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].links[1].href",containsString("http://localhost/groups/")))
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].id").isNumber())
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].type").isString())
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].operation").isString())
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].tag").isString())
+                .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].value").isString());
+
+        verify(rulesRepository,times(1)).save(ArgumentMatchers.any(Rule.class));
+
+    }
+
 }
