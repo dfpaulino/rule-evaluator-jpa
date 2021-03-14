@@ -1,5 +1,6 @@
 package org.farmtec.res.jpa.controller;
 
+import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.repositories.PredicateLeafRepository;
 import org.springframework.hateoas.CollectionModel;
@@ -47,14 +48,14 @@ public class PredicateLeafController {
 
     @GetMapping("/{id}")
     public EntityModel<PredicateLeaf> getPredicateLeafById(@PathVariable("id") long id) {
-        PredicateLeaf p = predicateLeafRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        PredicateLeaf p = predicateLeafRepository.findById(id).orElseThrow(() -> new RuntimeException("Predicate Not found"));
         return EntityModel.of(p,
                 linkTo(methodOn(PredicateLeafController.class).getPredicateLeafById(id)).withSelfRel()
         );
     }
     @PutMapping("/{id}")
     EntityModel<PredicateLeaf> updatePredicate(@RequestBody PredicateLeaf predicateLeaf,@PathVariable("id") long id) {
-        PredicateLeaf p = predicateLeafRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        PredicateLeaf p = predicateLeafRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Predicate Not found"));
         //TODO create a update method on PredicateLeaf class
         p.setOperation(predicateLeaf.getOperation());
         p.setValue(predicateLeaf.getValue());

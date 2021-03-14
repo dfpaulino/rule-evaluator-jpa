@@ -1,13 +1,16 @@
 package org.farmtec.res.jpa.controller;
 
+import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
 import org.farmtec.res.jpa.controller.representationModel.GroupCompositeRepresentationModel;
 import org.farmtec.res.jpa.controller.representationModel.RepresentationModelConverterUtil;
+import org.farmtec.res.jpa.controller.service.GroupControllerService;
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.repositories.GroupCompositeRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.Optional;
 
@@ -18,17 +21,16 @@ import java.util.Optional;
 @RequestMapping("/groups")
 public class GroupCompositeController {
 
-    private final GroupCompositeRepository groupCompositeRepository;
+    private final GroupControllerService groupControllerService;
 
-    public GroupCompositeController(GroupCompositeRepository groupCompositeRepository) {
-        this.groupCompositeRepository = groupCompositeRepository;
+    public GroupCompositeController(GroupControllerService groupControllerService) {
+        this.groupControllerService = groupControllerService;
     }
 
     @GetMapping("/{id}")
     @Transactional
     public GroupCompositeRepresentationModel getGroupById(@PathVariable("id") long id) {
-        GroupComposite groupComposite = groupCompositeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("group not found"));
+        GroupComposite groupComposite = groupControllerService.getGroupById(id);
         return RepresentationModelConverterUtil.fromGroupComposite(groupComposite, id);
     }
 
@@ -37,10 +39,7 @@ public class GroupCompositeController {
     public GroupCompositeRepresentationModel deletePredicate(@PathVariable("id") long groupId,
                                                              @PathVariable("predicateId") long predicateId) {
 
-        GroupComposite gc = groupCompositeRepository.findById(groupId)
-                .orElseThrow(() -> new RuntimeException("Group Not Found"));
-        gc.getPredicateLeaves().removeIf(p -> p.getId() == predicateId);
-        groupCompositeRepository.save(gc);
+        GroupComposite gc = groupControllerService.deleteGroupPredicate(groupId, predicateId);
         return RepresentationModelConverterUtil.fromGroupComposite(gc, groupId);
     }
 
@@ -49,46 +48,28 @@ public class GroupCompositeController {
     public GroupCompositeRepresentationModel deleteChildGroup(@PathVariable("id") long groupId,
                                                               @PathVariable("childId") long childId) {
 
-        GroupComposite gc = groupCompositeRepository.findById(groupId)
-                .orElseThrow(() -> new RuntimeException("Group Not Found"));
-        gc.getGroupComposites().removeIf(p -> p.getId() == childId);
+        GroupComposite gc = groupControllerService.deleteChildGroup(groupId, childId);
         return RepresentationModelConverterUtil.fromGroupComposite(gc, groupId);
     }
 
     @DeleteMapping("/{id}")
-    @Transactional
     public void deleteGroup(@PathVariable("id") long groupId) {
-        groupCompositeRepository.deleteById(groupId);
+        groupControllerService.getGroupById(groupId);
     }
 
     @PostMapping("/{id}")
     @Transactional
     public GroupCompositeRepresentationModel addGroup(@PathVariable("id") long parentId,
                                                       @RequestBody GroupComposite groupComposite) {
-        //todo  validate GroupLeaf
-        Optional<GroupComposite> gcOpt = groupCompositeRepository.findById(parentId);
-        GroupCompositeRepresentationModel toReturn;
-        if(gcOpt.isPresent()) {
-            //this is a manage entity...should save at end of scope
-            GroupComposite fetchedGroup = gcOpt.get();
-            fetchedGroup.getGroupComposites().add(groupComposite);
-            //groupCompositeRepository.save(fetchedGroup);
-            toReturn = RepresentationModelConverterUtil.fromGroupComposite(groupCompositeRepository.save(fetchedGroup), parentId);
-        }else {
-            GroupComposite saved = groupCompositeRepository.save(groupComposite);
-            toReturn = RepresentationModelConverterUtil.fromGroupComposite(saved, 0);
-        }
-        return toReturn;
+        return RepresentationModelConverterUtil.fromGroupComposite(groupControllerService
+                .addGroup(parentId, groupComposite), parentId);
     }
 
     @PostMapping("/{id}/predicate")
     @Transactional
     public GroupCompositeRepresentationModel addPredicateToGroup(@PathVariable("id") long groupId,
                                                                  @RequestBody PredicateLeaf predicateLeaf) {
-        GroupComposite groupComposite = groupCompositeRepository.findById(groupId)
-                .orElseThrow(() -> new RuntimeException("Group not found"));
-        groupComposite.getPredicateLeaves().add(predicateLeaf);
-
-        return RepresentationModelConverterUtil.fromGroupComposite(groupCompositeRepository.save(groupComposite), 0);
+        GroupComposite gc = groupControllerService.addPredicateToGroup(groupId,predicateLeaf);
+        return RepresentationModelConverterUtil.fromGroupComposite(gc, 0);
     }
 }

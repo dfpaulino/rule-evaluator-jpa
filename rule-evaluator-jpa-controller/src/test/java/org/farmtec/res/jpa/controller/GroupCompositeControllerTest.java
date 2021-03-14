@@ -1,9 +1,11 @@
 package org.farmtec.res.jpa.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.farmtec.res.jpa.controller.exception.ControllerAdvice;
+import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
+import org.farmtec.res.jpa.controller.service.GroupControllerService;
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
-import org.farmtec.res.jpa.repositories.GroupCompositeRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,8 +19,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.*;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -33,14 +38,16 @@ class GroupCompositeControllerTest {
 
     MockMvc mockMvc;
     @Mock
-    GroupCompositeRepository groupCompositeRepository;
+    GroupControllerService groupControllerService;
     GroupComposite g1, g2, gGroup, gPadd, gGroupAdd;
     PredicateLeaf p1, p2, p3, p4, p5;
+
 
     @BeforeEach
     void setUp() {
 
-        mockMvc = MockMvcBuilders.standaloneSetup(new GroupCompositeController(groupCompositeRepository))
+        mockMvc = MockMvcBuilders.standaloneSetup(new GroupCompositeController(groupControllerService))
+                .setControllerAdvice(ControllerAdvice.class)
                 .build();
 
         setPredicates();
@@ -79,13 +86,21 @@ class GroupCompositeControllerTest {
         gGroupAdd.setLogicalOperation("AND");
         gGroupAdd.setPredicateLeaves(new HashSet<PredicateLeaf>(Set.of(p5)));
 
-        when(groupCompositeRepository.findById(1L)).thenReturn(Optional.of(g1));
-        when(groupCompositeRepository.findById(2L)).thenReturn(Optional.of(g2));
-        when(groupCompositeRepository.findById(3L)).thenReturn(Optional.of(gGroup));
-        when(groupCompositeRepository.findById(4L)).thenReturn(Optional.of(gPadd));
-        when(groupCompositeRepository.save(any(GroupComposite.class))).thenReturn(gPadd);
+        when(groupControllerService.getGroupById(1L)).thenReturn(g1);
+        when(groupControllerService.getGroupById(2L)).thenReturn(g2);
+        when(groupControllerService.getGroupById(3L)).thenReturn(gGroup);
+        when(groupControllerService.getGroupById(4L)).thenReturn(gPadd);
+        when(groupControllerService.addPredicateToGroup(anyLong(),any(PredicateLeaf.class))).thenReturn(gPadd);
     }
 
+    @Test
+    void getGroupById_whenGroupNotFound() throws Exception{
+        when(groupControllerService.getGroupById(anyLong())).thenThrow(ResourceNotFound.class);
+        mockMvc.perform(get("/groups/1"))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFound))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
     @Test
     void getGroupById_shouldReturnNestedPredicates() throws Exception {
         mockMvc.perform(get("/groups/1"))
@@ -166,6 +181,13 @@ class GroupCompositeControllerTest {
 
     @Test
     public void deletePredicateFromGroup() throws Exception {
+
+        //given
+        //remove 1 predicate
+        g1.getPredicateLeaves().removeIf(p -> p.getId()==p1.getId());
+
+        when(groupControllerService.deleteGroupPredicate(anyLong(),anyLong())).thenReturn(g1);
+
         mockMvc.perform(delete("/groups/1/predicate/1"))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -181,6 +203,11 @@ class GroupCompositeControllerTest {
 
     @Test
     public void deleteGroupFromParentGroup() throws Exception {
+        //given
+        //remove 1 predicate
+        gGroup.getGroupComposites().removeIf(g -> g.getId()==g1.getId());
+
+        when(groupControllerService.deleteChildGroup(anyLong(),anyLong())).thenReturn(gGroup);
         mockMvc.perform(delete("/groups/3/group/1"))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -241,7 +268,7 @@ class GroupCompositeControllerTest {
 
         System.out.println(">>>>" + content);
         g1.getGroupComposites().add(gGroupAdd);
-        when(groupCompositeRepository.save(any(GroupComposite.class))).thenReturn(g1);
+        when(groupControllerService.addGroup(anyLong(),any(GroupComposite.class))).thenReturn(g1);
         //when//then
         mockMvc.perform(post("/groups/1/").content(content).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -250,31 +277,6 @@ class GroupCompositeControllerTest {
                 .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content", hasSize(1)));
     }
 
-    @Test
-    public void addNewGroup() throws Exception {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        //given
-        PredicateLeaf p = new PredicateLeaf();
-        p.setOperation("GTE");
-        p.setTag("tagInt");
-        p.setType("integer");
-        p.setValue("40");
-
-        GroupComposite groupCompositeToAdd = new GroupComposite();
-        groupCompositeToAdd.setLogicalOperation("AND");
-        groupCompositeToAdd.setPredicateLeaves(new HashSet<>(Set.of(p)));
-
-        String content = objectMapper.writeValueAsString(groupCompositeToAdd);
-
-        System.out.println(">>>>" + content);
-        g1.getGroupComposites().add(gGroupAdd);
-        when(groupCompositeRepository.save(any(GroupComposite.class))).thenReturn(gGroupAdd);
-        //when//then
-        mockMvc.perform(post("/groups/6").content(content).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
 
 
     private void setPredicates() {

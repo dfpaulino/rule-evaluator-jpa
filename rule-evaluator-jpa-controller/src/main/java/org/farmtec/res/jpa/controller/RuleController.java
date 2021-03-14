@@ -1,6 +1,7 @@
 package org.farmtec.res.jpa.controller;
 
 import org.farmtec.res.jpa.controller.dto.SimpleRuleDto;
+import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
 import org.farmtec.res.jpa.controller.representationModel.RepresentationModelConverterUtil;
 import org.farmtec.res.jpa.controller.representationModel.RuleRepresentationModel;
 import org.farmtec.res.jpa.model.Rule;
@@ -39,7 +40,7 @@ public class RuleController {
 
     @GetMapping("/{id}")
     public RuleRepresentationModel getRuleById(@PathVariable("id") long id) {
-        Rule rule = rulesRepository.findById(id).orElseThrow(() -> new RuntimeException("Rule Not Found"));
+        Rule rule = rulesRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Rule Not Found"));
         return RepresentationModelConverterUtil.ruleToRuleModel(rule);
     }
 
