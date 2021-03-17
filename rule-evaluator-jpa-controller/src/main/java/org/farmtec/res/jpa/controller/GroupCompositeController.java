@@ -1,18 +1,13 @@
 package org.farmtec.res.jpa.controller;
 
-import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
 import org.farmtec.res.jpa.controller.representationModel.GroupCompositeRepresentationModel;
 import org.farmtec.res.jpa.controller.representationModel.RepresentationModelConverterUtil;
 import org.farmtec.res.jpa.controller.service.GroupControllerService;
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
-import org.farmtec.res.jpa.repositories.GroupCompositeRepository;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResourceAccessException;
 
-import java.util.Optional;
 
 /**
  * Created by dp on 23/02/2021
