@@ -1,8 +1,7 @@
 package org.farmtec.res.jpa.controller;
 
-import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
+import org.farmtec.res.jpa.controller.service.PredicateControllerService;
 import org.farmtec.res.jpa.model.PredicateLeaf;
-import org.farmtec.res.jpa.repositories.PredicateLeafRepository;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.ExposesResourceFor;
@@ -24,15 +23,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @ExposesResourceFor(PredicateLeaf.class)
 public class PredicateLeafController {
 
-    private final PredicateLeafRepository predicateLeafRepository;
+    private final PredicateControllerService predicateControllerService;
 
-    public PredicateLeafController(PredicateLeafRepository predicateLeafRepository) {
-        this.predicateLeafRepository = predicateLeafRepository;
+    public PredicateLeafController(PredicateControllerService predicateControllerService) {
+        this.predicateControllerService = predicateControllerService;
     }
 
     @GetMapping(produces = { "application/hal+json" })
     public CollectionModel<EntityModel<PredicateLeaf>> getAll() {
-        List<EntityModel<PredicateLeaf>> predicatesEntityModels = predicateLeafRepository.findAll().stream()
+        List<EntityModel<PredicateLeaf>> predicatesEntityModels = predicateControllerService.getAllPredicates().stream()
                 .map(p ->
                             EntityModel.of(p,
                                 linkTo(methodOn(PredicateLeafController.class).getPredicateLeafById(p.getId()))
@@ -48,21 +47,13 @@ public class PredicateLeafController {
 
     @GetMapping("/{id}")
     public EntityModel<PredicateLeaf> getPredicateLeafById(@PathVariable("id") long id) {
-        PredicateLeaf p = predicateLeafRepository.findById(id).orElseThrow(() -> new RuntimeException("Predicate Not found"));
-        return EntityModel.of(p,
-                linkTo(methodOn(PredicateLeafController.class).getPredicateLeafById(id)).withSelfRel()
-        );
+        return EntityModel.of(predicateControllerService.getPredicateById(id),
+                linkTo(methodOn(PredicateLeafController.class).getPredicateLeafById(id)).withSelfRel());
     }
     @PutMapping("/{id}")
     EntityModel<PredicateLeaf> updatePredicate(@RequestBody PredicateLeaf predicateLeaf,@PathVariable("id") long id) {
-        PredicateLeaf p = predicateLeafRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Predicate Not found"));
-        //TODO create a update method on PredicateLeaf class
-        p.setOperation(predicateLeaf.getOperation());
-        p.setValue(predicateLeaf.getValue());
-        p.setTag(predicateLeaf.getTag());
-        p.setType(predicateLeaf.getType());
-        //TODO perhaps use merge. we have an Id... so we can consider the object detached state
-        PredicateLeaf saved = predicateLeafRepository.save(p);
+
+        PredicateLeaf saved = predicateControllerService.updatePredicate(id,predicateLeaf);
         return EntityModel.of(saved,
                 linkTo(methodOn(PredicateLeafController.class).getPredicateLeafById(saved.getId())).withSelfRel()
         );

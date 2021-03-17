@@ -11,10 +11,18 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @Getter @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class PredicateLeaf extends BaseTable {
     private String type;
     private String operation;
     private String tag;
     private String value;
+
+    public PredicateLeaf updateFrom(PredicateLeaf p) {
+        this.type=p.getType();
+        this.setTag(p.getTag());
+        this.setOperation(p.getOperation());
+        this.setValue(p.value);
+        return this;
+    }
 }

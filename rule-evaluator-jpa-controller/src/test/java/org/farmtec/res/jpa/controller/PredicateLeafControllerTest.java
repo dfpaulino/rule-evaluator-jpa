@@ -1,5 +1,8 @@
 package org.farmtec.res.jpa.controller;
 
+import org.farmtec.res.jpa.controller.exception.ControllerAdvice;
+import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
+import org.farmtec.res.jpa.controller.service.PredicateControllerService;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.repositories.PredicateLeafRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -7,9 +10,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.web.JsonPath;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
@@ -20,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,17 +45,16 @@ class PredicateLeafControllerTest {
 
     private  MockMvc mockMvc ;
     @Mock
-    PredicateLeafRepository predicateLeafRepository;
+    PredicateControllerService predicateControllerService;
 
     PredicateLeaf p1,p2,p3,p4;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new PredicateLeafController(predicateLeafRepository))
+        mockMvc = MockMvcBuilders.standaloneSetup(new PredicateLeafController(predicateControllerService))
+                .setControllerAdvice(ControllerAdvice.class)
                 .build();
         setPredicates();
-        when(predicateLeafRepository.findAll()).thenReturn(Arrays.asList(p1,p2,p3,p4));
-        when(predicateLeafRepository.findById(1L)).thenReturn(Optional.of(p1));
     }
 
     @AfterEach
@@ -59,6 +64,8 @@ class PredicateLeafControllerTest {
 
     @Test
     void getAll() throws Exception{
+        when(predicateControllerService.getAllPredicates()).thenReturn(Arrays.asList(p1,p2,p3,p4));
+
         mockMvc.perform(get("/predicates").accept("application/hal+json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("links[0].rel",is("self")))
@@ -75,7 +82,7 @@ class PredicateLeafControllerTest {
 
     @Test
     void getAll_whenEmpty() throws Exception{
-        when(predicateLeafRepository.findAll()).thenReturn(Collections.emptyList());
+        when(predicateControllerService.getAllPredicates()).thenReturn(Collections.emptyList());
         mockMvc.perform(get("/predicates"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("content",is(new ArrayList())))
@@ -84,6 +91,8 @@ class PredicateLeafControllerTest {
 
     @Test
     void getPredicateLeafById() throws Exception {
+        when(predicateControllerService.getPredicateById(anyLong())).thenReturn(p1);
+
         mockMvc.perform(get("/predicates/1").accept("application/hal+json"))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -97,8 +106,36 @@ class PredicateLeafControllerTest {
     }
 
     @Test
-    @Disabled
-    void updatePredicate() {
+    void getPredicateLeafById_whenNotFound() throws Exception {
+        when(predicateControllerService.getPredicateById(anyLong())).thenThrow(new ResourceNotFound("Predicate not found"));
+
+        mockMvc.perform(get("/predicates/1").accept("application/hal+json"))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResourceNotFound))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    void updatePredicate() throws Exception {
+
+        String content ="{" +
+                "\"type\":\"integer\"," +
+                "\"operation\":\"GTE\"," +
+                "\"tag\":\"age\"," +
+                "\"value\":\"65\"" +
+                "}";
+        when(predicateControllerService.updatePredicate(anyLong(),ArgumentMatchers.any(PredicateLeaf.class))).thenReturn(p1);
+        mockMvc.perform(put("/predicates/1/").content(content).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("id",is(1)))
+                .andExpect(jsonPath(("type"),is("integer")))
+                .andExpect(jsonPath(("operation"),is("EQ")))
+                .andExpect(jsonPath(("tag"),is("tag")))
+                .andExpect(jsonPath(("value"),is("123")))
+                .andExpect(jsonPath("links[0].rel",is("self")))
+                .andExpect(jsonPath("links[0].href  ",is("http://localhost/predicates/1")));
+
     }
 
     private void setPredicates() {
