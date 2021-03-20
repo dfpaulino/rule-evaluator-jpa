@@ -1,7 +1,6 @@
 package org.farmtec.res.jpa.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.farmtec.res.jpa.controller.exception.ControllerAdvice;
 import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
 import org.farmtec.res.jpa.controller.service.GroupControllerService;
 import org.farmtec.res.jpa.model.GroupComposite;

@@ -1,5 +1,7 @@
-package org.farmtec.res.jpa.controller.exception;
+package org.farmtec.res.jpa.controller;
 
+import org.farmtec.res.jpa.controller.exception.ErrorMessage;
+import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
 import org.farmtec.res.service.exceptions.InvalidOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,7 +16,7 @@ import java.util.Date;
 @RestControllerAdvice
 public class ControllerAdvice {
 
-    @ExceptionHandler(value = {InvalidOperation.class,NumberFormatException.class})
+    @ExceptionHandler(value = {IllegalArgumentException.class,InvalidOperation.class,NumberFormatException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorMessage handlerException(Exception e) {
         return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),new Date(),

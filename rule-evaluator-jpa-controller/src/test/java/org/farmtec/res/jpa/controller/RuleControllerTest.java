@@ -19,6 +19,7 @@ import java.util.*;
 
 import static org.hamcrest.Matchers.*;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -42,6 +43,7 @@ class RuleControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(new RuleController(rulesRepository))
+                .setControllerAdvice(ControllerAdvice.class)
                 .build();
 
         setPredicates();
@@ -256,7 +258,67 @@ class RuleControllerTest {
                 .andExpect(jsonPath("$.group.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].value").isString());
 
         verify(rulesRepository,times(1)).save(ArgumentMatchers.any(Rule.class));
-
     }
+
+    @Test
+    void addRule_invalidType() throws Exception {
+        //given
+        when(rulesRepository.save(ArgumentMatchers.any(Rule.class))).thenReturn(rule1);
+        ObjectMapper mapper = new ObjectMapper();
+        String rule = mapper.writeValueAsString(rule1);
+        System.out.println("["+rule+"]");
+        String content = "{\n" +
+                "   \"name\":\"Rule_1\",\n" +
+                "   \"priority\":1,\n" +
+                "   \"groupComposite\":{\n" +
+                "      \"logicalOperation\":\"OR\",\n" +
+                "      \"groupComposites\":[\n" +
+                "         {\n" +
+                "            \"logicalOperation\":\"AND\",\n" +
+                "            \"predicateLeaves\":[\n" +
+                "               {\n" +
+                "                  \"type\":\"strong\",\n" +
+                "                  \"operation\":\"EQ\",\n" +
+                "                  \"tag\":\"tagStr2\",\n" +
+                "                  \"value\":\"water\"\n" +
+                "               },\n" +
+                "               {\n" +
+                "                  \"type\":\"long\",\n" +
+                "                  \"operation\":\"GTE\",\n" +
+                "                  \"tag\":\"tag2\",\n" +
+                "                  \"value\":\"999999999999999\"\n" +
+                "               }\n" +
+                "            ]\n" +
+                "         },\n" +
+                "         {\n" +
+                "            \"logicalOperation\":\"AND\",\n" +
+                "            \"predicateLeaves\":[\n" +
+                "               {\n" +
+                "                  \"type\":\"string\",\n" +
+                "                  \"operation\":\"CONTAINS\",\n" +
+                "                  \"tag\":\"tagStr\",\n" +
+                "                  \"value\":\"spring\"\n" +
+                "               },\n" +
+                "               {\n" +
+                "                  \"type\":\"integer\",\n" +
+                "                  \"operation\":\"EQ\",\n" +
+                "                  \"tag\":\"tag\",\n" +
+                "                  \"value\":\"123\"\n" +
+                "               }\n" +
+                "            ]\n" +
+                "         }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "}";
+
+        mockMvc.perform(post("/rules").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+                .andDo(print())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof IllegalArgumentException))
+                .andExpect(status().isBadRequest());
+        verify(rulesRepository,times(0)).save(ArgumentMatchers.any(Rule.class));
+    }
+
 
 }

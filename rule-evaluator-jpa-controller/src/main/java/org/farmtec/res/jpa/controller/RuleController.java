@@ -6,6 +6,7 @@ import org.farmtec.res.jpa.controller.representationModel.RepresentationModelCon
 import org.farmtec.res.jpa.controller.representationModel.RuleRepresentationModel;
 import org.farmtec.res.jpa.model.Rule;
 import org.farmtec.res.jpa.repositories.RulesRepository;
+import org.farmtec.res.jpa.utils.RulesValidator;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,6 @@ public class RuleController {
 
     @GetMapping
     public CollectionModel<EntityModel<SimpleRuleDto>> getAllRules() {
-
         List<EntityModel<SimpleRuleDto>> simpleRuleDtoModels = rulesRepository.findAll().stream()
                 .map(RepresentationModelConverterUtil::ruleToSimpleRuleEntity)
                 .collect(Collectors.toList());
@@ -54,7 +54,7 @@ public class RuleController {
     //TODO add validation of payload
     @PostMapping
     public RuleRepresentationModel addRule(@RequestBody Rule rule) {
-
+        RulesValidator.validateRule(rule);
         Rule saved = rulesRepository.save(rule);
         return RepresentationModelConverterUtil.ruleToRuleModel(saved);
     }
@@ -63,5 +63,4 @@ public class RuleController {
     public void deleteRuleById(@PathVariable("id") long id) {
         rulesRepository.deleteById(id);
     }
-
 }
