@@ -1,18 +1,13 @@
-package org.farmtec.res.jpa.utils;
+package org.farmtec.res.jpa.service.utils;
 
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.model.Rule;
 import org.farmtec.res.service.exceptions.InvalidOperation;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.mockito.MockitoAnnotations;
 
-import java.nio.channels.AcceptPendingException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -28,7 +23,7 @@ class RulesValidatorTest {
     private GroupComposite gp11;
     private Rule rule;
     private PredicateLeaf p1,p2,p3,p4,p5;
-    private RulesValidator rulesValidator = new RulesValidator();
+    private RulesValidatorImpl rulesValidator = new RulesValidatorImpl();
 
     @BeforeEach
     void setUp() {

@@ -6,7 +6,8 @@ import org.farmtec.res.jpa.controller.representationModel.RepresentationModelCon
 import org.farmtec.res.jpa.controller.representationModel.RuleRepresentationModel;
 import org.farmtec.res.jpa.model.Rule;
 import org.farmtec.res.jpa.repositories.RulesRepository;
-import org.farmtec.res.jpa.utils.RulesValidator;
+import org.farmtec.res.jpa.service.utils.RulesValidator;
+
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +25,11 @@ import java.util.stream.Collectors;
 public class RuleController {
 
     private final RulesRepository rulesRepository;
+    private final RulesValidator rulesValidator;
 
-    public RuleController(RulesRepository rulesRepository) {
+    public RuleController(RulesRepository rulesRepository, RulesValidator rulesValidator) {
         this.rulesRepository = rulesRepository;
+        this.rulesValidator = rulesValidator;
     }
 
     @GetMapping
@@ -54,7 +57,7 @@ public class RuleController {
     //TODO add validation of payload
     @PostMapping
     public RuleRepresentationModel addRule(@RequestBody Rule rule) {
-        RulesValidator.validateRule(rule);
+        rulesValidator.validateRule(rule);
         Rule saved = rulesRepository.save(rule);
         return RepresentationModelConverterUtil.ruleToRuleModel(saved);
     }

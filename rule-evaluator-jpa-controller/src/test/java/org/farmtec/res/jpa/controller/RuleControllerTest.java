@@ -5,6 +5,8 @@ import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.model.Rule;
 import org.farmtec.res.jpa.repositories.RulesRepository;
+import org.farmtec.res.jpa.service.utils.RulesValidator;
+import org.farmtec.res.jpa.service.utils.RulesValidatorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,11 +40,13 @@ class RuleControllerTest {
     private PredicateLeaf p1, p2, p3, p4;
     @Mock
     private RulesRepository rulesRepository;
+    @Mock
+    private RulesValidator rulesValidator;
 
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new RuleController(rulesRepository))
+        mockMvc = MockMvcBuilders.standaloneSetup(new RuleController(rulesRepository, new RulesValidatorImpl()))
                 .setControllerAdvice(ControllerAdvice.class)
                 .build();
 

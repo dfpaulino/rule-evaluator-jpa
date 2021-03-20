@@ -4,9 +4,11 @@ import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.repositories.GroupCompositeRepository;
+import org.farmtec.res.jpa.service.utils.RulesValidatorImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -16,9 +18,11 @@ import java.util.Optional;
 public class GroupControllerService {
 
     private final GroupCompositeRepository groupCompositeRepository;
+    private final RulesValidatorImpl rulesValidator;
 
-    public GroupControllerService(GroupCompositeRepository groupCompositeRepository) {
+    public GroupControllerService(GroupCompositeRepository groupCompositeRepository, RulesValidatorImpl rulesValidator) {
         this.groupCompositeRepository = groupCompositeRepository;
+        this.rulesValidator = rulesValidator;
     }
 
     @Transactional
@@ -52,7 +56,8 @@ public class GroupControllerService {
 
     @Transactional
     public GroupComposite addGroup(long parentId, GroupComposite groupComposite) {
-        //todo add validation for predicates
+        rulesValidator.validateGroup(groupComposite);
+
         Optional<GroupComposite> gcOpt = groupCompositeRepository.findById(parentId);
         GroupComposite toReturn;
         if(gcOpt.isPresent()) {
@@ -70,7 +75,8 @@ public class GroupControllerService {
     }
     @Transactional
     public GroupComposite addPredicateToGroup(long groupId, PredicateLeaf predicateLeaf) {
-        //todo add validation to predicate
+        rulesValidator.validatePredicate(Arrays.asList(predicateLeaf));
+
         GroupComposite groupComposite = groupCompositeRepository.findById(groupId)
                 .orElseThrow(() -> new ResourceNotFound("GroupId Not Found"));
         groupComposite.getPredicateLeaves().add(predicateLeaf);

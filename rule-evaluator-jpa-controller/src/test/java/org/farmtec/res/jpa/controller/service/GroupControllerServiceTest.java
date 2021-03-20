@@ -4,13 +4,13 @@ import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.repositories.GroupCompositeRepository;
+import org.farmtec.res.jpa.service.utils.RulesValidatorImpl;
+import org.farmtec.res.service.exceptions.InvalidOperation;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -21,6 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -31,6 +32,8 @@ class GroupControllerServiceTest {
 
     @Mock
     GroupCompositeRepository groupCompositeRepository;
+    @Mock
+    RulesValidatorImpl rulesValidator;
     GroupControllerService groupControllerService;
     GroupComposite g1, g2, gGroup, gGroupAdd;
     PredicateLeaf p1, p2, p3, p4, p5;
@@ -38,7 +41,7 @@ class GroupControllerServiceTest {
 
     @BeforeEach
     void setUp() {
-        groupControllerService = new GroupControllerService(groupCompositeRepository);
+        groupControllerService = new GroupControllerService(groupCompositeRepository, rulesValidator);
 
         setPredicates();
         g1 = new GroupComposite();
@@ -133,9 +136,19 @@ class GroupControllerServiceTest {
         when(groupCompositeRepository.findById(3L)).thenReturn(Optional.of(gGroup));
         int groupSize = gGroup.getGroupComposites().size();
         //when
-        GroupComposite gc = groupControllerService.addGroup(gGroup.getId(),gGroupAdd);
+        GroupComposite gc = groupControllerService.addGroup(gGroup.getId(), gGroupAdd);
         //then
         assertThat(gc.getGroupComposites().size()).isEqualTo(groupSize + 1);
+    }
+
+    @Test
+    void addGroup_toParentGroup_whenGroupisInvalid() {
+        //given
+        //given
+        when(rulesValidator.validateGroup(any(GroupComposite.class))).thenThrow(new InvalidOperation("Predicate not valid"));
+        int groupSize = gGroup.getGroupComposites().size();
+        //when
+        assertThrows(InvalidOperation.class, () -> groupControllerService.addGroup(1L, g2));
     }
 
     @Test
@@ -144,7 +157,7 @@ class GroupControllerServiceTest {
         //given
         when(groupCompositeRepository.save(any())).thenReturn(gGroup);
         //when
-        GroupComposite gc = groupControllerService.addGroup(gGroup.getId(),gGroupAdd);
+        GroupComposite gc = groupControllerService.addGroup(gGroup.getId(), gGroupAdd);
         //then
         assertThat(gc).isNotNull();
     }
@@ -166,7 +179,16 @@ class GroupControllerServiceTest {
         //given
         //when
         //then
-        assertThrows(ResourceNotFound.class, () -> groupControllerService.addPredicateToGroup(1L,p5));
+        assertThrows(ResourceNotFound.class, () -> groupControllerService.addPredicateToGroup(1L, p5));
+    }
+
+    @Test
+    void addPredicateToGroup_invalidPredicate_shouldThrowException() {
+        //given
+        when(rulesValidator.validatePredicate(any())).thenThrow(new IllegalArgumentException("some error"));
+        //when
+        //then
+        assertThrows(IllegalArgumentException.class, () -> groupControllerService.addPredicateToGroup(1L, p5));
     }
 
     private void setPredicates() {

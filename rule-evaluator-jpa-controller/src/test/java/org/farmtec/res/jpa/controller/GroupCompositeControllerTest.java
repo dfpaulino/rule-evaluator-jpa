@@ -6,6 +6,7 @@ import org.farmtec.res.jpa.controller.service.GroupControllerService;
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 
+import org.farmtec.res.service.exceptions.InvalidOperation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -246,6 +247,28 @@ class GroupCompositeControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.logicalOperation", is("AND")))
                 .andExpect(jsonPath("$.predicateRepresentationModels.content", hasSize(3)));
+    }
+
+    @Test
+    public void addPredicateToGroup_invalidPredicate() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        PredicateLeaf p = new PredicateLeaf();
+        p.setOperation("xpto");
+        p.setTag("tagInt");
+        p.setType("integer");
+        p.setValue("40");
+        String content = objectMapper.writeValueAsString(p);
+
+        System.out.println(">>>>" + content);
+
+        when(groupControllerService.addPredicateToGroup(anyLong(),any(PredicateLeaf.class)))
+                .thenThrow(new InvalidOperation("invalid operation"));
+
+        mockMvc.perform(post("/groups/1/predicate").content(content).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode", is(400)))
+                .andExpect(jsonPath("$.message", is("invalid operation")));
     }
 
     @Test

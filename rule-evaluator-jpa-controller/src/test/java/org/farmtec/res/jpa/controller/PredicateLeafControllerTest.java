@@ -3,6 +3,7 @@ package org.farmtec.res.jpa.controller;
 import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
 import org.farmtec.res.jpa.controller.service.PredicateControllerService;
 import org.farmtec.res.jpa.model.PredicateLeaf;
+import org.farmtec.res.service.exceptions.InvalidOperation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -126,7 +127,21 @@ class PredicateLeafControllerTest {
                 .andExpect(jsonPath(("value"),is("123")))
                 .andExpect(jsonPath("links[0].rel",is("self")))
                 .andExpect(jsonPath("links[0].href  ",is("http://localhost/predicates/1")));
+    }
 
+    @Test
+    public void updatePredicate_whenInvalid_shouldReturn400() throws Exception {
+
+        String content ="{" +
+                "\"type\":\"integer\"," +
+                "\"operation\":\"GTE\"," +
+                "\"tag\":\"age\"," +
+                "\"value\":\"65\"" +
+                "}";
+        when(predicateControllerService.updatePredicate(anyLong(),ArgumentMatchers.any(PredicateLeaf.class))).thenThrow(new InvalidOperation("error"));
+        mockMvc.perform(put("/predicates/1/").content(content).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
     }
 
     private void setPredicates() {

@@ -3,6 +3,8 @@ package org.farmtec.res.jpa.controller.service;
 import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.repositories.PredicateLeafRepository;
+import org.farmtec.res.jpa.service.utils.RulesValidatorImpl;
+import org.farmtec.res.service.exceptions.InvalidOperation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -27,12 +30,14 @@ class PredicateControllerServiceTest {
 
     @Mock
     PredicateLeafRepository predicateLeafRepository;
+    @Mock
+    RulesValidatorImpl rulesValidator;
     PredicateControllerService predicateControllerService;
     PredicateLeaf p1, p2, p3, p4;
 
     @BeforeEach
     void setUp() {
-        predicateControllerService = new PredicateControllerService(predicateLeafRepository);
+        predicateControllerService = new PredicateControllerService(predicateLeafRepository, rulesValidator);
         setPredicates();
     }
 
@@ -91,6 +96,19 @@ class PredicateControllerServiceTest {
 
         //when
         assertThrows(ResourceNotFound.class,() ->predicateControllerService.updatePredicate(2L,updatedPredicate));
+    }
+
+    @Test
+    void updatePredicate_whenInvalid_throwsException() {
+        //given
+        PredicateLeaf updatedPredicate = new PredicateLeaf();
+        updatedPredicate.setType("string");
+        updatedPredicate.setOperation("CONTAINS");
+        updatedPredicate.setTag("framework");
+        updatedPredicate.setValue("spring");
+        when(rulesValidator.validatePredicate(any())).thenThrow(new InvalidOperation("some rror"));
+        //when
+        assertThrows(InvalidOperation.class,() ->predicateControllerService.updatePredicate(2L,updatedPredicate));
     }
 
     private void setPredicates() {
