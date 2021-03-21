@@ -7,13 +7,13 @@ import org.springframework.hateoas.RepresentationModel;
  * Created by dp on 23/02/2021
  */
 public class PredicateRepresentationModel extends RepresentationModel<PredicateRepresentationModel> {
-    private PredicateLeaf predicateLeaf;
+    private PredicateLeaf predicate;
 
-    public PredicateLeaf getPredicateLeaf() {
-        return predicateLeaf;
+    public PredicateLeaf getPredicate() {
+        return predicate;
     }
 
-    public void setPredicateLeaf(PredicateLeaf predicateLeaf) {
-        this.predicateLeaf = predicateLeaf;
+    public void setPredicate(PredicateLeaf predicate) {
+        this.predicate = predicate;
     }
 }

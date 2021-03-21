@@ -107,23 +107,23 @@ class GroupCompositeControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.logicalOperation", is("AND")))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content", hasSize(2)))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].operation").exists())
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].type").exists())
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].tag ").exists())
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].value").exists())
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].links[0].href",
+                .andExpect(jsonPath("$.predicates.content", hasSize(2)))
+                .andExpect(jsonPath("$.predicates.content[0].operation").exists())
+                .andExpect(jsonPath("$.predicates.content[0].type").exists())
+                .andExpect(jsonPath("$.predicates.content[0].tag ").exists())
+                .andExpect(jsonPath("$.predicates.content[0].value").exists())
+                .andExpect(jsonPath("$.predicates.content[0].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.predicates.content[0].links[0].href",
                         containsString("http://localhost/predicates/")))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].links[1].rel", is("deletePredicate")))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].links[1].href",
+                .andExpect(jsonPath("$.predicates.content[0].links[1].rel", is("deletePredicate")))
+                .andExpect(jsonPath("$.predicates.content[0].links[1].href",
                         containsString("http://localhost/groups/1/predicate/")))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[1].operation").exists())
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[1].type").exists())
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[1].tag ").exists())
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[1].value").exists())
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[1].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[1].links[1].rel", is("deletePredicate")));
+                .andExpect(jsonPath("$.predicates.content[1].operation").exists())
+                .andExpect(jsonPath("$.predicates.content[1].type").exists())
+                .andExpect(jsonPath("$.predicates.content[1].tag ").exists())
+                .andExpect(jsonPath("$.predicates.content[1].value").exists())
+                .andExpect(jsonPath("$.predicates.content[1].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.predicates.content[1].links[1].rel", is("deletePredicate")));
     }
 
     @Test
@@ -132,50 +132,50 @@ class GroupCompositeControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.logicalOperation", is("OR")))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content", hasSize(0)))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content", hasSize(2)))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].logicalOperation", is("AND")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content", hasSize(2)))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].links[1].rel", is("deleteChildGroup")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].tag ").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].value").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].links[1].rel", is("deletePredicate")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].operation").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].type").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].tag ").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].value").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].links[1].rel", is("deletePredicate")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].links[0].href",
+                .andExpect(jsonPath("$.predicates.content", hasSize(0)))
+                .andExpect(jsonPath("$.groups.content", hasSize(2)))
+                .andExpect(jsonPath("$.groups.content[0].logicalOperation", is("AND")))
+                .andExpect(jsonPath("$.groups.content[0].predicates.content", hasSize(2)))
+                .andExpect(jsonPath("$.groups.content[0].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.groups.content[0].links[1].rel", is("deleteChildGroup")))
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[0].tag ").exists())
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[0].value").exists())
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[0].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[0].links[1].rel", is("deletePredicate")))
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[1].operation").exists())
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[1].type").exists())
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[1].tag ").exists())
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[1].value").exists())
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[1].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[1].links[1].rel", is("deletePredicate")))
+                .andExpect(jsonPath("$.groups.content[0].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.groups.content[0].links[0].href",
                         containsString("http://localhost/groups/")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].links[1].href",
+                .andExpect(jsonPath("$.groups.content[0].links[1].href",
                         containsString("http://localhost/groups/3/group/")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].links[1].rel", is("deleteChildGroup")))
+                .andExpect(jsonPath("$.groups.content[0].links[1].rel", is("deleteChildGroup")))
 
 
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].logicalOperation", is("AND")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].predicateRepresentationModels.content", hasSize(2)))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].links[1].rel", is("deleteChildGroup")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].predicateRepresentationModels.content[0].tag ").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].predicateRepresentationModels.content[0].value").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].predicateRepresentationModels.content[0].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].predicateRepresentationModels.content[0].links[1].rel", is("deletePredicate")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].predicateRepresentationModels.content[1].operation").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].predicateRepresentationModels.content[1].type").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].predicateRepresentationModels.content[1].tag ").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].predicateRepresentationModels.content[1].value").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].predicateRepresentationModels.content[1].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].predicateRepresentationModels.content[1].links[1].rel", is("deletePredicate")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].links[0].href",
+                .andExpect(jsonPath("$.groups.content[1].logicalOperation", is("AND")))
+                .andExpect(jsonPath("$.groups.content[1].predicates.content", hasSize(2)))
+                .andExpect(jsonPath("$.groups.content[1].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.groups.content[1].links[1].rel", is("deleteChildGroup")))
+                .andExpect(jsonPath("$.groups.content[1].predicates.content[0].tag ").exists())
+                .andExpect(jsonPath("$.groups.content[1].predicates.content[0].value").exists())
+                .andExpect(jsonPath("$.groups.content[1].predicates.content[0].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.groups.content[1].predicates.content[0].links[1].rel", is("deletePredicate")))
+                .andExpect(jsonPath("$.groups.content[1].predicates.content[1].operation").exists())
+                .andExpect(jsonPath("$.groups.content[1].predicates.content[1].type").exists())
+                .andExpect(jsonPath("$.groups.content[1].predicates.content[1].tag ").exists())
+                .andExpect(jsonPath("$.groups.content[1].predicates.content[1].value").exists())
+                .andExpect(jsonPath("$.groups.content[1].predicates.content[1].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.groups.content[1].predicates.content[1].links[1].rel", is("deletePredicate")))
+                .andExpect(jsonPath("$.groups.content[1].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.groups.content[1].links[0].href",
                         containsString("http://localhost/groups/")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].links[1].href",
+                .andExpect(jsonPath("$.groups.content[1].links[1].href",
                         containsString("http://localhost/groups/3/group/")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[1].links[1].rel", is("deleteChildGroup")));
+                .andExpect(jsonPath("$.groups.content[1].links[1].rel", is("deleteChildGroup")));
 
     }
 
@@ -192,13 +192,13 @@ class GroupCompositeControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.logicalOperation", is("AND")))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content", hasSize(1)))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].operation").exists())
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].type").exists())
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].tag ").exists())
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].value").exists())
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content[0].links[1].rel", is("deletePredicate")));
+                .andExpect(jsonPath("$.predicates.content", hasSize(1)))
+                .andExpect(jsonPath("$.predicates.content[0].operation").exists())
+                .andExpect(jsonPath("$.predicates.content[0].type").exists())
+                .andExpect(jsonPath("$.predicates.content[0].tag ").exists())
+                .andExpect(jsonPath("$.predicates.content[0].value").exists())
+                .andExpect(jsonPath("$.predicates.content[0].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.predicates.content[0].links[1].rel", is("deletePredicate")));
     }
 
     @Test
@@ -212,22 +212,22 @@ class GroupCompositeControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.logicalOperation", is("OR")))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content", hasSize(0)))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content", hasSize(1)))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].logicalOperation", is("AND")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content", hasSize(2)))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].links[1].rel", is("deleteChildGroup")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].tag ").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].value").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[0].links[1].rel", is("deletePredicate")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].operation").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].type").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].tag ").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].value").exists())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].links[0].rel", is("self")))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content[1].links[1].rel", is("deletePredicate")));
+                .andExpect(jsonPath("$.predicates.content", hasSize(0)))
+                .andExpect(jsonPath("$.groups.content", hasSize(1)))
+                .andExpect(jsonPath("$.groups.content[0].logicalOperation", is("AND")))
+                .andExpect(jsonPath("$.groups.content[0].predicates.content", hasSize(2)))
+                .andExpect(jsonPath("$.groups.content[0].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.groups.content[0].links[1].rel", is("deleteChildGroup")))
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[0].tag ").exists())
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[0].value").exists())
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[0].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[0].links[1].rel", is("deletePredicate")))
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[1].operation").exists())
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[1].type").exists())
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[1].tag ").exists())
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[1].value").exists())
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[1].links[0].rel", is("self")))
+                .andExpect(jsonPath("$.groups.content[0].predicates.content[1].links[1].rel", is("deletePredicate")));
     }
 
     @Test
@@ -246,7 +246,7 @@ class GroupCompositeControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.logicalOperation", is("AND")))
-                .andExpect(jsonPath("$.predicateRepresentationModels.content", hasSize(3)));
+                .andExpect(jsonPath("$.predicates.content", hasSize(3)));
     }
 
     @Test
@@ -295,8 +295,8 @@ class GroupCompositeControllerTest {
         mockMvc.perform(post("/groups/1/").content(content).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content", hasSize(1)))
-                .andExpect(jsonPath("$.groupCompositeRepresentationModels.content[0].predicateRepresentationModels.content", hasSize(1)));
+                .andExpect(jsonPath("$.groups.content", hasSize(1)))
+                .andExpect(jsonPath("$.groups.content[0].predicates.content", hasSize(1)));
     }
 
 

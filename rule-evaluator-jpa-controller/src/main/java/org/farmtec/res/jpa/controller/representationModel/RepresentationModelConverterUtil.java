@@ -42,13 +42,13 @@ public class RepresentationModelConverterUtil {
         groupCompositeRepresentationModel.setLogicalOperation(groupComposite.getLogicalOperation());
         //convert the PredicateLeafs
         if (null != groupComposite.getPredicateLeaves()) {
-            groupCompositeRepresentationModel.setPredicateRepresentationModels(
+            groupCompositeRepresentationModel.setPredicates(
                     RepresentationModelConverterUtil.fromPredicateLeaf(groupComposite.getPredicateLeaves(), groupComposite.getId())
             );
         }
         //convert the nested groupComposits recursively
         if (null != groupComposite.getGroupComposites()) {
-            groupCompositeRepresentationModel.setGroupCompositeRepresentationModels(
+            groupCompositeRepresentationModel.setGroups(
                     CollectionModel.of(groupComposite.getGroupComposites().stream()
                             .map(g -> RepresentationModelConverterUtil.fromGroupComposite(g, parentGroupId)
                             ).collect(Collectors.toUnmodifiableSet()))
