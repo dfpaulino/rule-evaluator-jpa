@@ -36,8 +36,13 @@ public class RepresentationModelConverterUtil {
 
         GroupCompositeRepresentationModel groupCompositeRepresentationModel = new GroupCompositeRepresentationModel();
 
-        groupCompositeRepresentationModel.add(linkTo(methodOn(GroupCompositeController.class).getGroupById(groupComposite.getId())).withSelfRel());
-        groupCompositeRepresentationModel.add(linkTo(methodOn(GroupCompositeController.class).deleteChildGroup(parentGroupId, groupComposite.getId())).withRel("deleteChildGroup"));
+        groupCompositeRepresentationModel.add(linkTo(methodOn(GroupCompositeController.class)
+                .getGroupById(groupComposite.getId())).withSelfRel());
+        // should not expose URI to delete it self.
+        if(parentGroupId!=groupComposite.getId()) {
+            groupCompositeRepresentationModel.add(linkTo(methodOn(GroupCompositeController.class)
+                    .deleteChildGroup(parentGroupId, groupComposite.getId())).withRel("deleteChildGroup"));
+        }
 
         groupCompositeRepresentationModel.setLogicalOperation(groupComposite.getLogicalOperation());
         //convert the PredicateLeafs
@@ -74,7 +79,7 @@ public class RepresentationModelConverterUtil {
         ruleRepresentationModel.setName(rule.getName());
         ruleRepresentationModel.setPriority(rule.getPriority());
         if(null != rule.getGroupComposite()) {
-            ruleRepresentationModel.setGroup(RepresentationModelConverterUtil.fromGroupComposite(rule.getGroupComposite(), 0));
+            ruleRepresentationModel.setGroup(RepresentationModelConverterUtil.fromGroupComposite(rule.getGroupComposite(), rule.getGroupComposite().getId()));
         }
         return ruleRepresentationModel;
     }
