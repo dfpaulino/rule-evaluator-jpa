@@ -34,26 +34,37 @@ jobs:
           command: git clone -b 'rule-evaluator-core-1.0.0'  --single-branch https://github.com/dfpaulino/ruleEvaluatorService.git --depth=1
       # Download and cache dependencies
       - run:
-          name: cd into directory
+          name: build rule-evaluator-core
           working_directory: ~/repo/ruleEvaluatorService
           command: mvn install -DskipTests
 
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+      - run:
+          name: clean
+          working_directory: ~/repo/ruleEvaluatorService
+          command: mvn clean
 
-      - run: mvn install -DskipTests
-      - run: mvn dependency:go-offline
+      - run:
+          name: clean
+          working_directory: ~/repo
+          command: rm -rf ruleEvaluatorService
 
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
+
+      #      - restore_cache:
+#          keys:
+#            - v1-dependencies-{{ checksum "pom.xml" }}
+#            # fallback to using the latest cache if no exact match is found
+#            - v1-dependencies-
+
+#      - run: mvn install -DskipTests
+#      - run: mvn dependency:go-offline
+
+#      - save_cache:
+#          paths:
+#            - ~/.m2
+#          key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn clean
+#      - run: mvn clean
 
 workflows:
   version: 2
