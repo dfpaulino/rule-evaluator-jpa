@@ -33,6 +33,10 @@ jobs:
           name: Clone GitHub repository
           command: git clone -b 'rule-evaluator-core-1.0.0'  --single-branch https://github.com/dfpaulino/ruleEvaluatorService.git --depth=1
       # Download and cache dependencies
+      - run:
+          name: cd into directory
+          working_directory: ~/repo/ruleEvaluatorService/
+
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
