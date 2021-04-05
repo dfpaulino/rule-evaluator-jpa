@@ -26,11 +26,12 @@ jobs:
           fingerprints:
             - "6f:f4:77:a9:55:99:f0:ed:02:89:0f:ec:d7:e7:24:ef"
       - run:
-        name: Avoid hosts unknown for github
-        command: echo -e “Host github.com\n\tStrictHostKeyChecking no\n” > ~/.ssh/config
+          name: Avoid hosts unknown for github
+          command: echo -e “Host github.com\n\tStrictHostKeyChecking no\n” > ~/.ssh/config
+
       - run:
-        name: Clone GitHub repository
-        command: git clone -b 'rule-evaluator-core-1.0.0' — single-branch git@github.com:dfpaulino/ruleEvaluatorService.git — depth=1
+          name: Clone GitHub repository
+          command: git clone -b 'rule-evaluator-core-1.0.0' — single-branch git@github.com:dfpaulino/ruleEvaluatorService.git — depth=1
       # Download and cache dependencies
       - restore_cache:
           keys:
