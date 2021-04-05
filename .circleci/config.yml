@@ -30,7 +30,7 @@ jobs:
 #          command: echo -e “Host github.com\n\tStrictHostKeyChecking no\n” > ~/.ssh/config
 
       - run:
-          name: Clone GitHub repository
+          name: Clone GitHub repository rule-evaluator-core
           command: git clone -b 'rule-evaluator-core-1.0.0'  --single-branch https://github.com/dfpaulino/ruleEvaluatorService.git --depth=1
       # Download and cache dependencies
       - run:
@@ -39,15 +39,16 @@ jobs:
           command: mvn install -DskipTests
 
       - run:
-          name: clean
+          name: clean rule-evaluator-core
           working_directory: ~/repo/ruleEvaluatorService
           command: mvn clean
 
       - run:
-          name: clean
+          name: clean directory
           working_directory: ~/repo
           command: rm -rf ruleEvaluatorService
 
+      #now that we have the rule-evaluator-core in the .m2, we can check/test out the target code
       - checkout
 
       # Download and cache dependencies
