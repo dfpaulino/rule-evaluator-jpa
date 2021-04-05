@@ -22,12 +22,12 @@ jobs:
       TERM: dumb
 
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "6f:f4:77:a9:55:99:f0:ed:02:89:0f:ec:d7:e7:24:ef"
-      - run:
-          name: Avoid hosts unknown for github
-          command: echo -e “Host github.com\n\tStrictHostKeyChecking no\n” > ~/.ssh/config
+#      - add_ssh_keys:
+#          fingerprints:
+#            - "6f:f4:77:a9:55:99:f0:ed:02:89:0f:ec:d7:e7:24:ef"
+#      - run:
+#          name: Avoid hosts unknown for github
+#          command: echo -e “Host github.com\n\tStrictHostKeyChecking no\n” > ~/.ssh/config
 
       - run:
           name: Clone GitHub repository
@@ -48,23 +48,25 @@ jobs:
           working_directory: ~/repo
           command: rm -rf ruleEvaluatorService
 
+      - checkout
 
-      #      - restore_cache:
-#          keys:
-#            - v1-dependencies-{{ checksum "pom.xml" }}
-#            # fallback to using the latest cache if no exact match is found
-#            - v1-dependencies-
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
 
-#      - run: mvn install -DskipTests
-#      - run: mvn dependency:go-offline
+      - run: mvn install -DskipTests
+      - run: mvn dependency:go-offline
 
-#      - save_cache:
-#          paths:
-#            - ~/.m2
-#          key: v1-dependencies-{{ checksum "pom.xml" }}
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run tests!
-#      - run: mvn clean
+      - run: mvn clean install
 
 workflows:
   version: 2
