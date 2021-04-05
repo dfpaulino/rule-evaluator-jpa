@@ -1,5 +1,5 @@
 # rule-evaluator-jpa
 
-[![CircleCI](https://circleci.com/gh/dfpaulino/rule-evaluator-jpa/tree/master.svg?style=svg)](https://github.com/dfpaulino/rule-evaluator-jpa/tree/master)
+[![CircleCI](https://circleci.com/gh/dfpaulino/rule-evaluator-jpa.svg?style=svg)](https://github.com/dfpaulino/rule-evaluator-jpa)
 
 rule evaluator jpa starter
