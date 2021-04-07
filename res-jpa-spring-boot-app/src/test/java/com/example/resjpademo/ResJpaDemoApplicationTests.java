@@ -112,10 +112,12 @@ class ResJpaDemoApplicationTests {
 				"      ]\n" +
 				"    }\n" +
 				"}";
+		int currentRuleSize = rulesRepository.findAll().size();
 		testBody(webTestCli.post().uri(URI_GET_ALL_RULES)
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(Mono.just(ruleStr),String.class)
 				.exchange().expectStatus().isOk().expectBody());
+		assertThat(rulesRepository.findAll().size()).isEqualTo(currentRuleSize + 1);
 	}
 
 	@Test
@@ -125,6 +127,59 @@ class ResJpaDemoApplicationTests {
 		webTestCli.delete().uri(URI_GET_ALL_RULES+"/1")
 				.exchange().expectStatus().isOk();
 		assertThat(rulesRepository.findAll().size()).isEqualTo(rulesListSize -1);
+	}
+
+	@Test
+
+	void addRules_invalidType() {
+		String ruleStr = "{\n" +
+				"   \"name\":\"Rule_2\",\n" +
+				"   \"priority\":1,\n" +
+				"   \"groupComposite\":{\n" +
+				"      \"logicalOperation\":\"OR\",\n" +
+				"      \"groupComposites\":[\n" +
+				"         {\n" +
+				"            \"logicalOperation\":\"AND\",\n" +
+				"            \"predicateLeaves\":[\n" +
+				"               {\n" +
+				"                  \"type\":\"strong\",\n" +
+				"                  \"operation\":\"EQ\",\n" +
+				"                  \"tag\":\"name\",\n" +
+				"                  \"value\":\"Walter White\"\n" +
+				"               },\n" +
+				"               {\n" +
+				"                  \"type\":\"long\",\n" +
+				"                  \"operation\":\"GTE\",\n" +
+				"                  \"tag\":\"tag2\",\n" +
+				"                  \"value\":\"50\"\n" +
+				"               }\n" +
+				"            ]\n" +
+				"         },\n" +
+				"         {\n" +
+				"            \"logicalOperation\":\"AND\",\n" +
+				"            \"predicateLeaves\":[\n" +
+				"               {\n" +
+				"                  \"type\":\"string\",\n" +
+				"                  \"operation\":\"CONTAINS\",\n" +
+				"                  \"tag\":\"name\",\n" +
+				"                  \"value\":\"GoodMan\"\n" +
+				"               },\n" +
+				"               {\n" +
+				"                  \"type\":\"integer\",\n" +
+				"                  \"operation\":\"LTE\",\n" +
+				"                  \"tag\":\"age\",\n" +
+				"                  \"value\":\"50\"\n" +
+				"               }\n" +
+				"            ]\n" +
+				"         }\n" +
+				"      ]\n" +
+				"    }\n" +
+				"}";
+
+		webTestCli.post().uri(URI_GET_ALL_RULES)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(Mono.just(ruleStr),String.class)
+				.exchange().expectStatus().isBadRequest();
 	}
 
 	private void testBody(WebTestClient.BodyContentSpec body) {
