@@ -12,3 +12,18 @@ Once the rules are loaded into memory, no further transactions with the database
 
 Three main groupsREST API's are provided to allow the user to create/update/delete rules, evaluate rules and reload rules.
 Each group of API's are defined in the Wiki page of this project [API spec](https://github.com/dfpaulino/rule-evaluator-jpa/wiki)
+
+# Concepts
+Its important to understand the concept around this project before attempting to configure any rule
+A Rule is an Object that is composed by
+1. Name - rule name
+2. priority
+3. list of Actions (not supported yet)
+4. group of rules/expressions - we call this a groupComposite, as this can be composed by other groups and/or predicates
+
+The GroupComposite (group) is an object that is composed by
+1. Logical operation
+2. List of other groups
+3. List of predicates
+
+The predicate is the raw expression  (A>1)
