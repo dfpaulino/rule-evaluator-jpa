@@ -45,7 +45,7 @@ public class RuleController {
     public CollectionModel<EntityModel<SimpleRuleDto>> getRulesByFilter(
         @RequestParam("filter") String filter) {
         List<EntityModel<SimpleRuleDto>> simpleRuleDtoModels = rulesRepository.findAll().stream()
-            .filter(r -> r.getFilter().equalsIgnoreCase(filter))
+            .filter(r -> r.getFilter()!=null?r.getFilter().equalsIgnoreCase(filter):false)
             .map(RepresentationModelConverterUtil::ruleToSimpleRuleEntity)
             .collect(Collectors.toList());
 

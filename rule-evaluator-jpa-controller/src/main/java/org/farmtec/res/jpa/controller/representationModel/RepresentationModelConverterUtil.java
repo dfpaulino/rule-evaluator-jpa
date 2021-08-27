@@ -68,6 +68,7 @@ public class RepresentationModelConverterUtil {
                 .id(rule.getId())
                 .name(rule.getName())
                 .priority(rule.getPriority())
+                .filter(rule.getFilter())
                 .build();
         return EntityModel.of(simpleRuleDto,
                 linkTo(methodOn(RuleController.class).getRuleById(simpleRuleDto.getId())).withSelfRel());
