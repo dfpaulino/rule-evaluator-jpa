@@ -76,12 +76,14 @@ class RuleControllerTest {
         rule1.setId(1L);
         rule1.setName("Rule_1");
         rule1.setPriority(1);
+        rule1.setFilter("Grid_1");
         rule1.setGroupComposite(gGroup);
 
         rule2 = new Rule();
         rule2.setId(2L);
         rule2.setName("Rule_2");
         rule2.setPriority(2);
+        rule2.setFilter("Grid_2");
         rule2.setGroupComposite(g2);
 
         when(rulesRepository.findAll()).thenReturn(new ArrayList<>(List.of(rule1,rule2)));
@@ -137,6 +139,7 @@ class RuleControllerTest {
                 .andExpect(jsonPath("$.content[0].name").isString())
                 .andExpect(jsonPath("$.content[0].name",containsString("Rule")))
                 .andExpect(jsonPath("$.content[0].priority").isNumber())
+                .andExpect(jsonPath("$.content[0].filter").exists())
                 .andExpect(jsonPath("$.content[0].links[0].rel", is("self")))
                 .andExpect(jsonPath("$.content[0].links[0].href",
                         containsString("http://localhost/rules")))
@@ -158,6 +161,7 @@ class RuleControllerTest {
                 .andExpect(jsonPath("$.name").isString())
                 .andExpect(jsonPath("$.name",containsString("Rule")))
                 .andExpect(jsonPath("$.priority").isNumber())
+                .andExpect(jsonPath("$.filter").exists())
                 .andExpect(jsonPath("$.group.logicalOperation",is("OR")))
                 .andExpect(jsonPath("$.group.groups.content",hasSize(2)))
                 .andExpect(jsonPath("$.group.groups.content[0].logicalOperation",is("AND")))

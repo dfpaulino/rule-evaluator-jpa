@@ -12,8 +12,9 @@ import java.util.List;
 @Getter
 @Builder
 public class SimpleRuleDto {
-    long id;
-    String name;
-    int priority;
-    List<Action> actions;
+    private long id;
+    private String name;
+    private int priority;
+    private String filter;
+    private List<Action> actions;
 }

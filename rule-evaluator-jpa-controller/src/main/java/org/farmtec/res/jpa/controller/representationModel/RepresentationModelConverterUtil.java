@@ -68,6 +68,7 @@ public class RepresentationModelConverterUtil {
                 .id(rule.getId())
                 .name(rule.getName())
                 .priority(rule.getPriority())
+                .filter(rule.getFilter())
                 .build();
         return EntityModel.of(simpleRuleDto,
                 linkTo(methodOn(RuleController.class).getRuleById(simpleRuleDto.getId())).withSelfRel());
@@ -78,6 +79,7 @@ public class RepresentationModelConverterUtil {
         ruleRepresentationModel.setId(rule.getId());
         ruleRepresentationModel.setName(rule.getName());
         ruleRepresentationModel.setPriority(rule.getPriority());
+        ruleRepresentationModel.setFilter(rule.getFilter());
         if(null != rule.getGroupComposite()) {
             ruleRepresentationModel.setGroup(RepresentationModelConverterUtil.fromGroupComposite(rule.getGroupComposite(), rule.getGroupComposite().getId()));
         }

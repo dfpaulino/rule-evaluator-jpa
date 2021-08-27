@@ -17,6 +17,10 @@ public class RuleMapRuleDto {
         if(rule!=null) {
             ruleDto.setPriority(rule.getPriority());
             ruleDto.setActions(new ArrayList<>());
+
+            if(null!=rule.getFilter()) {
+                ruleDto.setFilter(rule.getFilter());
+            }
             ruleDto.setPredicateName(GROUP_PREFIX+rule.getGroupComposite().getId());
         }
         return ruleDto;

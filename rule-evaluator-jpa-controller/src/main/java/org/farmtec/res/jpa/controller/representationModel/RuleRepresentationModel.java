@@ -12,5 +12,6 @@ public class RuleRepresentationModel extends RepresentationModel<RuleRepresentat
     long id;
     String name;
     int priority;
+    String filter;
     GroupCompositeRepresentationModel group;
 }

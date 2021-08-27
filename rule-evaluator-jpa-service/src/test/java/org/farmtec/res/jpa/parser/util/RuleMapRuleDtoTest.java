@@ -36,13 +36,27 @@ class RuleMapRuleDtoTest {
     }
 
     @Test
-    void ruleToRuleDto() {
+    void ruleToRuleDto_whenNoFilterIsApplied() {
         //when
         RuleDto ruleDto = RuleMapRuleDto.RuleToRuleDto(r1);
         //then
         assertThat(ruleDto).isNotNull();
         assertThat(ruleDto.isComplete()).isTrue();
         assertThat(ruleDto.getPriority()).isEqualTo(r1.getPriority());
+        assertThat(ruleDto.getFilter()).isEmpty();
+        assertThat(ruleDto.getPredicateName()).isEqualTo(GROUP_PREFIX+r1.getGroupComposite().getId());
+    }
+
+    @Test
+    void ruleToRuleDto_whenFilterIsApplied() {
+        //when
+        r1.setFilter("SensorGridA");
+        RuleDto ruleDto = RuleMapRuleDto.RuleToRuleDto(r1);
+        //then
+        assertThat(ruleDto).isNotNull();
+        assertThat(ruleDto.isComplete()).isTrue();
+        assertThat(ruleDto.getPriority()).isEqualTo(r1.getPriority());
+        assertThat(ruleDto.getFilter()).isEqualTo("SensorGridA");
         assertThat(ruleDto.getPredicateName()).isEqualTo(GROUP_PREFIX+r1.getGroupComposite().getId());
     }
 }

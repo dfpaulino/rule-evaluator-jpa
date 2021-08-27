@@ -109,16 +109,17 @@ class RuleProcessControllerTest {
         rule1 = ImmutableRule.builder().name("Rule1")
                 .actions(Collections.<Action>emptyList())
                 .priority(1)
+                .filter("")
                 .ruleGroupComposite(ruleGroupComposite)
                 .build();
         rule2 = ImmutableRule.builder().name("Rule2")
                 .actions(Collections.<Action>emptyList())
                 .ruleGroupComposite(ruleGroupComposite)
-                .priority(2).build();
+                .priority(2).filter("").build();
         rule3 = ImmutableRule.builder().name("Rule3")
                 .actions(Collections.<Action>emptyList())
                 .ruleGroupComposite(ruleGroupComposite)
-                .priority(3).build();
+                .priority(3).filter("").build();
 
     }
 

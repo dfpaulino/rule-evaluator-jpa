@@ -15,6 +15,7 @@ import javax.persistence.*;
 public class Rule extends BaseTable{
     private String name;
     private int priority;
+    private String filter;
     @OneToOne(cascade = CascadeType.ALL)
     private GroupComposite groupComposite;
 
