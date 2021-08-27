@@ -1,5 +1,6 @@
 package org.farmtec.res.jpa.repositories;
 
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.farmtec.res.jpa.config.JpaConfig;
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
@@ -93,7 +94,7 @@ class RuleRepositoryTest {
 
 
     @Test
-    public void persistRule() {
+    public void persistRule_noFilter() {
         //given
         Rule rule = new Rule();
         rule.setName("rule_1");
@@ -108,7 +109,30 @@ class RuleRepositoryTest {
 
         assertAll(
                 () -> assertThat(fetched.size()).isEqualTo(1),
+                () -> assertThat(fetched.get(0).getFilter()).isNull(),
                 () -> assertThat(fetched.contains(rule)).isTrue()
+        );
+    }
+
+    @Test
+    public void persistRule_WithFilter() {
+        //given
+        Rule rule = new Rule();
+        rule.setName("rule_1");
+        rule.setFilter("Sensor_Grid_A");
+        rule.setPriority(1);
+        rule.setGroupComposite(G1);
+
+        //when
+        entityManager.persist(rule);
+
+        List<Rule> fetched = rulesRepository.findAll();
+        System.out.println(rule);
+
+        assertAll(
+            () -> assertThat(fetched.size()).isEqualTo(1),
+            () -> assertThat(fetched.get(0).getFilter()).isEqualTo("Sensor_Grid_A"),
+            () -> assertThat(fetched.contains(rule)).isTrue()
         );
     }
 

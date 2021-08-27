@@ -51,6 +51,7 @@ class RuleTestIT {
 		String ruleStr = "{\n" +
 				"   \"name\":\"Rule_2\",\n" +
 				"   \"priority\":1,\n" +
+				"   \"filter\":\"Grid_A\",\n" +
 				"   \"groupComposite\":{\n" +
 				"      \"logicalOperation\":\"OR\",\n" +
 				"      \"groupComposites\":[\n" +
@@ -106,6 +107,7 @@ class RuleTestIT {
 		body.jsonPath("$.id").isNotEmpty()
 				.jsonPath("$.name").isNotEmpty()
 				.jsonPath("$.priority").exists()
+				.jsonPath("$.filter").exists()
 				.jsonPath("$.group.logicalOperation").exists()
 				//validate groups
 				.jsonPath("$.group.groups._embedded.groupCompositeRepresentationModelList").isArray()

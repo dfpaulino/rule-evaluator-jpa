@@ -41,6 +41,17 @@ public class RuleController {
         return CollectionModel.of(simpleRuleDtoModels);
     }
 
+    @GetMapping("/filter")
+    public CollectionModel<EntityModel<SimpleRuleDto>> getRulesByFilter(
+        @RequestParam("filter") String filter) {
+        List<EntityModel<SimpleRuleDto>> simpleRuleDtoModels = rulesRepository.findAll().stream()
+            .filter(r -> r.getFilter().equalsIgnoreCase(filter))
+            .map(RepresentationModelConverterUtil::ruleToSimpleRuleEntity)
+            .collect(Collectors.toList());
+
+        return CollectionModel.of(simpleRuleDtoModels);
+    }
+
     @GetMapping("/{id}")
     public RuleRepresentationModel getRuleById(@PathVariable("id") long id) {
         Rule rule = rulesRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Rule Not Found"));

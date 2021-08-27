@@ -78,6 +78,7 @@ public class RepresentationModelConverterUtil {
         ruleRepresentationModel.setId(rule.getId());
         ruleRepresentationModel.setName(rule.getName());
         ruleRepresentationModel.setPriority(rule.getPriority());
+        ruleRepresentationModel.setFilter(rule.getFilter());
         if(null != rule.getGroupComposite()) {
             ruleRepresentationModel.setGroup(RepresentationModelConverterUtil.fromGroupComposite(rule.getGroupComposite(), rule.getGroupComposite().getId()));
         }
