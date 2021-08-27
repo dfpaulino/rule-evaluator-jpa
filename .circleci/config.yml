@@ -31,7 +31,7 @@ jobs:
 
       - run:
           name: Clone GitHub repository rule-evaluator-core
-          command: git clone -b 'rule_filter_19'  --single-branch https://github.com/dfpaulino/ruleEvaluatorService.git --depth=1
+          command: git clone -b 'rule-evaluator-core-2.0.0'  --single-branch https://github.com/dfpaulino/ruleEvaluatorService.git --depth=1
       # Download and cache dependencies
       - run:
           name: build rule-evaluator-core
