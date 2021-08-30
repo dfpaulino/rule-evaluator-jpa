@@ -2,7 +2,6 @@ target/*
 .idea/*
 .attach*
 *.iml
-*.sql
 
 
 # Compiled class file
