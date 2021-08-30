@@ -90,7 +90,7 @@ class GroupCompositeApiIT {
 	}
 
 	@Test
-	@Order(3)
+	@Order(2)
 	@Transactional
 	void addPredicateToGroup() {
 		String predicate = "{\n" +
@@ -110,11 +110,12 @@ class GroupCompositeApiIT {
 	}
 
 	@Test
-	@Order(4)
+	@Order(3)
 	void deleteRule() {
 		int rulesListSize = groupCompositeRepository.findAll().size();
-		webTestCli.delete().uri(URI_GET_GROUP+"/1")
+		webTestCli.delete().uri(URI_GET_GROUP+"/2")
 				.exchange().expectStatus().isOk();
+
 		assertThat(groupCompositeRepository.findAll().size()).isEqualTo(rulesListSize -1);
 	}
 
