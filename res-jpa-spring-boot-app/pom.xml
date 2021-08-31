@@ -7,10 +7,11 @@
 		<version>2.4.2</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.example</groupId>
-	<artifactId>res-jpa-demo</artifactId>
+	<artifactId>res-jpa-service</artifactId>
 	<version>1.1.1-SNAPSHOT</version>
-	<name>res-jpa-demo</name>
+	<name>res-jpa-service</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
@@ -65,6 +66,7 @@
 				</configuration>
 				<executions>
 					<execution>
+						<phase>test</phase>
 						<goals>
 							<goal>integration-test</goal>
 							<goal>verify</goal>
@@ -73,11 +75,37 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.37.0</version>
+				<configuration>
+					<verbose>true</verbose>
+					<images>
+						<image>
+							<registry>docker.io</registry>
+							<name>dpaulino/rule-evaluator</name>
+							<build>
+								<contextDir>${project.basedir}</contextDir>
+								<tags>
+									<tag>${project.version}</tag>
+								</tags>
+							</build>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 
-
-  <scm>
-    <tag>rule-evaluator-jpa-build-1.1.0</tag>
-  </scm>
 </project>
