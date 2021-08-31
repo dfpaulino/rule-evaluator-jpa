@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<skipIntegrationTests>false</skipIntegrationTests>
+		<skipImageBuild>false</skipImageBuild>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -80,12 +81,14 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.37.0</version>
 				<configuration>
+					<skip>${skipImageBuild}</skip>
 					<verbose>true</verbose>
 					<images>
 						<image>
 							<registry>docker.io</registry>
 							<name>dpaulino/rule-evaluator</name>
 							<build>
+								<skip>${skipImageBuild}</skip>
 								<contextDir>${project.basedir}</contextDir>
 								<tags>
 									<tag>${project.version}</tag>
