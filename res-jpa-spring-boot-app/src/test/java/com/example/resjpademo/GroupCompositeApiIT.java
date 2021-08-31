@@ -2,12 +2,14 @@ package com.example.resjpademo;
 
 
 import org.farmtec.res.jpa.repositories.GroupCompositeRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
@@ -17,6 +19,7 @@ import javax.transaction.Transactional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext
 class GroupCompositeApiIT {
 
 	private final String URI_GET_GROUP = "/groups";
@@ -110,8 +113,10 @@ class GroupCompositeApiIT {
 	}
 
 	@Test
-	@Order(3)
+	@Order(4)
+	@Disabled(value = "to be defined. should be delete groups/{id}/group/{childId}")
 	void deleteRule() {
+		System.out.println("GROUP DELETE");
 		int rulesListSize = groupCompositeRepository.findAll().size();
 		webTestCli.delete().uri(URI_GET_GROUP+"/2")
 				.exchange().expectStatus().isOk();
