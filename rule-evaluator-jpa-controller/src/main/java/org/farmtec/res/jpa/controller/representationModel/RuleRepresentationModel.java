@@ -1,7 +1,12 @@
 package org.farmtec.res.jpa.controller.representationModel;
 
+import java.util.Collection;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.farmtec.res.jpa.model.Action;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.RepresentationModel;
 
 /**
@@ -12,6 +17,7 @@ public class RuleRepresentationModel extends RepresentationModel<RuleRepresentat
     long id;
     String name;
     int priority;
+    CollectionModel<EntityModel<Action>> actions;
     String filter;
     GroupCompositeRepresentationModel group;
 }

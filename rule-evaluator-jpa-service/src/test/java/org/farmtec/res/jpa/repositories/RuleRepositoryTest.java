@@ -1,7 +1,9 @@
 package org.farmtec.res.jpa.repositories;
 
-import org.assertj.core.api.AssertionsForClassTypes;
+import java.util.Arrays;
+
 import org.farmtec.res.jpa.config.JpaConfig;
+import org.farmtec.res.jpa.model.Action;
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 
@@ -43,6 +45,8 @@ class RuleRepositoryTest {
     @Autowired
     private PredicateLeafRepository predicateLeafRepository;
 
+    @Autowired
+    private ActionRepository actionRepository;
 
     private PredicateLeaf p1;
     private PredicateLeaf p2;
@@ -137,6 +141,40 @@ class RuleRepositoryTest {
     }
 
     @Test
+    public void persistRule_withActions() {
+        //given
+        Rule rule = new Rule();
+        rule.setName("rule_1");
+        rule.setPriority(1);
+        rule.setGroupComposite(G1);
+
+        Action action1 = new Action();
+        action1.setType("EMAIL");
+        action1.setData("message");
+        action1.setPriority(1);
+
+        Action action2 = new Action();
+        action2.setType("SMS");
+        action2.setData("message SMS");
+        action2.setPriority(2);
+
+        rule.setActions(Arrays.asList(action1,action2));
+        //when
+        entityManager.persist(rule);
+
+        List<Rule> fetched = rulesRepository.findAll();
+        System.out.println(rule);
+
+        assertAll(
+            () -> assertThat(fetched.size()).isEqualTo(1),
+            () -> assertThat(fetched.get(0).getFilter()).isNull(),
+            () -> assertThat(fetched.get(0).getActions()).isNotNull(),
+            () -> assertThat(fetched.get(0).getActions()).hasSize(2),
+            () -> assertThat(actionRepository.findAll()).hasSize(2)
+        );
+    }
+
+    @Test
     public void deleteRule() {
         //given
         Rule rule = new Rule();
@@ -144,6 +182,17 @@ class RuleRepositoryTest {
         rule.setPriority(1);
         rule.setGroupComposite(G1);
 
+        Action action1 = new Action();
+        action1.setType("EMAIL");
+        action1.setData("message");
+        action1.setPriority(1);
+
+        Action action2 = new Action();
+        action2.setType("SMS");
+        action2.setData("message SMS");
+        action2.setPriority(2);
+
+        rule.setActions(Arrays.asList(action1,action2));
         //when
         entityManager.persist(rule);
 
@@ -161,7 +210,8 @@ class RuleRepositoryTest {
         assertAll(
                 () -> assertThat(rulesRepository.findAll()).hasSize(0),
                 () -> assertThat(groupCompositeRepository.findAll()).hasSize(0),
-                () -> assertThat(predicateLeafRepository.findAll()).hasSize(0)
+                () -> assertThat(predicateLeafRepository.findAll()).hasSize(0),
+                () -> assertThat(actionRepository.findAll()).hasSize(0)
         );
     }
 }

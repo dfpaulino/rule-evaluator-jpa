@@ -1,5 +1,6 @@
 package org.farmtec.res.jpa.model;
 
+import java.util.List;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,4 +20,10 @@ public class Rule extends BaseTable{
     @OneToOne(cascade = CascadeType.ALL)
     private GroupComposite groupComposite;
 
+    @OneToMany(cascade = CascadeType.ALL,
+        orphanRemoval = true,fetch = FetchType.EAGER)
+    @JoinTable(name ="rule_to_actions",
+        joinColumns = @JoinColumn(name = "rule_id"),
+        inverseJoinColumns = @JoinColumn(name = "action_id"))
+    private List<Action> actions;
 }

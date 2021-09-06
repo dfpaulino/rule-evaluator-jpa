@@ -75,6 +75,19 @@ class ResJpaDemoApplicationTests {
 		String ruleStr = "{\n" +
 				"   \"name\":\"Rule_2\",\n" +
 				"   \"priority\":1,\n" +
+				"\"actions\": [\n"
+				+ "            {\n"
+				+ "                \"type\": \"SMS\",\n"
+				+ "                \"data\": \"send SMS\",\n"
+				+ "                \"priority\": 1\n"
+				+ "            },\n"
+				+ "            {\n"
+				+ "                \"type\": \"EMAIL\",\n"
+				+ "                \"data\": \"send EMAIL\",\n"
+				+ "                \"priority\": 2\n"
+				+ "            }\n"
+				+ "        ],"
+				+
 				"   \"groupComposite\":{\n" +
 				"      \"logicalOperation\":\"OR\",\n" +
 				"      \"groupComposites\":[\n" +
@@ -189,6 +202,14 @@ class ResJpaDemoApplicationTests {
 		body.jsonPath("$.id").isNotEmpty()
 				.jsonPath("$.name").isNotEmpty()
 				.jsonPath("$.priority").exists()
+				.jsonPath("$.actions").exists()
+				.jsonPath("$.actions._embedded.actionList").isArray()
+				.jsonPath("$.actions._embedded.actionList[0].type").isNotEmpty()
+				.jsonPath("$.actions._embedded.actionList[0].data").isNotEmpty()
+				.jsonPath("$.actions._embedded.actionList[0].priority").isNumber()
+				.jsonPath("$.actions._embedded.actionList[1].type").isNotEmpty()
+				.jsonPath("$.actions._embedded.actionList[1].data").isNotEmpty()
+				.jsonPath("$.actions._embedded.actionList[1].priority").isNumber()
 				.jsonPath("$.group.logicalOperation").exists()
 				//validate groups
 				.jsonPath("$.group.groups._embedded.groupCompositeRepresentationModelList").isArray()

@@ -1,5 +1,7 @@
 package com.example.resjpademo;
 
+import java.util.Arrays;
+import org.farmtec.res.jpa.model.Action;
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.model.Rule;
@@ -70,9 +72,20 @@ public class LoadRulesSample implements CommandLineRunner {
         G1.setGroupComposites(Set.of(G11, G12));
         G1.setLogicalOperation("OR");
 
+        Action action1 = new Action();
+        action1.setType("SMS");
+        action1.setData("message SMS");
+        action1.setPriority(1);
+
+        Action action2 = new Action();
+        action2.setType("EMAIL");
+        action2.setData("message EMAIL");
+        action2.setPriority(2);
+
         rule = new Rule();
         rule.setName("Rule_1");
         rule.setPriority(1);
+        rule.setActions(Arrays.asList(action1,action2));
         rule.setGroupComposite(G1);
     }
 

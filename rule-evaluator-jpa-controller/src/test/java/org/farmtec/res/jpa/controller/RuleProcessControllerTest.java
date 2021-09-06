@@ -7,6 +7,7 @@ import org.farmtec.res.rules.impl.ImmutableRuleGroupComposite;
 import org.farmtec.res.rules.impl.RuleGroupComposite;
 import org.farmtec.res.service.RuleService;
 import org.farmtec.res.service.model.Action;
+import org.farmtec.res.service.model.ImmutableAction;
 import org.farmtec.res.service.model.ImmutableRule;
 import org.farmtec.res.service.model.Rule;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,7 +76,15 @@ class RuleProcessControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.[0].name",is("Rule1")))
                 .andExpect(jsonPath("$.[0].actions").isArray())
-                .andExpect(jsonPath("$.[0].actions").isEmpty());
+                .andExpect(jsonPath("$.[0].actions",hasSize(2)))
+                .andExpect(jsonPath("$.[0].actions[0].type").isString())
+                .andExpect(jsonPath("$.[0].actions[0].data").isString())
+                .andExpect(jsonPath("$.[0].actions[0].priority").isNumber())
+                .andExpect(jsonPath("$.[0].actions[1].type").isString())
+                .andExpect(jsonPath("$.[0].actions[1].data").isString())
+                .andExpect(jsonPath("$.[0].actions[1].priority").isNumber())
+                .andExpect(jsonPath("$.[1]").doesNotExist());
+
     }
 
     @Test
@@ -92,34 +101,51 @@ class RuleProcessControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$",hasSize(3)))
                 .andExpect(jsonPath("$.[0].name",containsString("Rule")))
+                //.andExpect(jsonPath("$.[0].filter").exists())
                 .andExpect(jsonPath("$.[0].actions").isArray())
-                .andExpect(jsonPath("$.[0].actions").isEmpty())
+                .andExpect(jsonPath("$.[0].actions",hasSize(2)))
                 .andExpect(jsonPath("$.[1].name",containsString("Rule")))
+                //.andExpect(jsonPath("$.[1].filter").exists())
                 .andExpect(jsonPath("$.[1].actions").isArray())
-                .andExpect(jsonPath("$.[1].actions").isEmpty())
+                .andExpect(jsonPath("$.[1].actions",hasSize(2)))
                 .andExpect(jsonPath("$.[2].name",containsString("Rule")))
+                //.andExpect(jsonPath("$.[2].filter").exists())
                 .andExpect(jsonPath("$.[2].actions").isArray())
-                .andExpect(jsonPath("$.[2].actions").isEmpty());
+                .andExpect(jsonPath("$.[2].actions",hasSize(2)));
     }
 
     private void setRules() {
 
         RuleGroupComposite ruleGroupComposite = ImmutableRuleGroupComposite.builder()
                 .logicalOperation(LogicalOperation.AND).build();
+
+        Action action1 = ImmutableAction.builder()
+            .type("SMS")
+            .data("message")
+            .priority(1)
+            .build();
+        Action action2 = ImmutableAction.builder()
+            .type("SMS")
+            .data("message")
+            .priority(1)
+            .build();
+
         rule1 = ImmutableRule.builder().name("Rule1")
                 .actions(Collections.<Action>emptyList())
                 .priority(1)
-                .filter("")
+                .filter("filter")
+                .actions(Arrays.asList(action1,action2))
                 .ruleGroupComposite(ruleGroupComposite)
                 .build();
+
         rule2 = ImmutableRule.builder().name("Rule2")
                 .actions(Collections.<Action>emptyList())
                 .ruleGroupComposite(ruleGroupComposite)
-                .priority(2).filter("").build();
+                .priority(2).filter("filter").actions(Arrays.asList(action1,action2)).build();
         rule3 = ImmutableRule.builder().name("Rule3")
                 .actions(Collections.<Action>emptyList())
                 .ruleGroupComposite(ruleGroupComposite)
-                .priority(3).filter("").build();
+                .priority(3).filter("filter").actions(Arrays.asList(action1,action2)).build();
 
     }
 

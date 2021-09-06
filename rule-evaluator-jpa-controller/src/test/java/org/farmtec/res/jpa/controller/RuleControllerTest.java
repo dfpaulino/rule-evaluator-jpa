@@ -1,6 +1,7 @@
 package org.farmtec.res.jpa.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.farmtec.res.jpa.model.Action;
 import org.farmtec.res.jpa.model.GroupComposite;
 import org.farmtec.res.jpa.model.PredicateLeaf;
 import org.farmtec.res.jpa.model.Rule;
@@ -51,6 +52,19 @@ class RuleControllerTest {
                 .build();
 
         setPredicates();
+
+        Action action1 = new Action();
+        action1.setId(1L);
+        action1.setType("SMS");
+        action1.setData("message SMS");
+        action1.setPriority(1);
+
+        Action action2 = new Action();
+        action2.setId(2L);
+        action2.setType("EMAIL");
+        action2.setData("message EMAIL");
+        action2.setPriority(1);
+
         g1 = new GroupComposite();
         g1.setId(1L);
         g1.setCreateTime(new Date());
@@ -79,12 +93,16 @@ class RuleControllerTest {
         rule1.setFilter("Grid_1");
         rule1.setGroupComposite(gGroup);
 
+        rule1.setActions(Arrays.asList(action1,action2));
+
+
         rule2 = new Rule();
         rule2.setId(2L);
         rule2.setName("Rule_2");
         rule2.setPriority(2);
         rule2.setFilter("Grid_2");
         rule2.setGroupComposite(g2);
+        rule2.setActions(Arrays.asList(action1,action2));
 
         when(rulesRepository.findAll()).thenReturn(new ArrayList<>(List.of(rule1,rule2)));
         when(rulesRepository.findById(1L)).thenReturn(Optional.of(rule1));
@@ -162,6 +180,15 @@ class RuleControllerTest {
                 .andExpect(jsonPath("$.name",containsString("Rule")))
                 .andExpect(jsonPath("$.priority").isNumber())
                 .andExpect(jsonPath("$.filter").exists())
+                .andExpect(jsonPath("$.actions.content",hasSize(2)))
+                .andExpect(jsonPath("$.actions.content[0].id").isNumber())
+                .andExpect(jsonPath("$.actions.content[0].type").isString())
+                .andExpect(jsonPath("$.actions.content[0].data",containsString("message")))
+                .andExpect(jsonPath("$.actions.content[0].priority",is(1)))
+                .andExpect(jsonPath("$.actions.content[1].id").isNumber())
+                .andExpect(jsonPath("$.actions.content[1].type").isString())
+                .andExpect(jsonPath("$.actions.content[1].data",containsString("message")))
+                .andExpect(jsonPath("$.actions.content[1].priority",is(1)))
                 .andExpect(jsonPath("$.group.logicalOperation",is("OR")))
                 .andExpect(jsonPath("$.group.groups.content",hasSize(2)))
                 .andExpect(jsonPath("$.group.groups.content[0].logicalOperation",is("AND")))

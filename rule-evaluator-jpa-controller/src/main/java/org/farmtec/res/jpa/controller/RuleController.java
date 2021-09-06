@@ -77,4 +77,13 @@ public class RuleController {
     public void deleteRuleById(@PathVariable("id") long id) {
         rulesRepository.deleteById(id);
     }
+
+    @DeleteMapping("/{id}/action/{actionId}")
+    @Transactional
+    public RuleRepresentationModel deleteActionId(@PathVariable("id") long id,@PathVariable("actionId") long actionId) {
+        Rule rule = rulesRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Rule Not Found"));
+        rule.getActions().removeIf(action -> action.getId()==actionId);
+        return RepresentationModelConverterUtil.ruleToRuleModel(rule);
+    }
+
 }
