@@ -1,9 +1,11 @@
 package org.farmtec.res.jpa.controller;
 
+import javax.validation.Valid;
 import org.farmtec.res.jpa.controller.dto.SimpleRuleDto;
 import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
 import org.farmtec.res.jpa.controller.representationModel.RepresentationModelConverterUtil;
 import org.farmtec.res.jpa.controller.representationModel.RuleRepresentationModel;
+import org.farmtec.res.jpa.model.Action;
 import org.farmtec.res.jpa.model.Rule;
 import org.farmtec.res.jpa.repositories.RulesRepository;
 import org.farmtec.res.jpa.service.utils.RulesValidator;
@@ -78,6 +80,7 @@ public class RuleController {
         rulesRepository.deleteById(id);
     }
 
+    // TODO tests
     @DeleteMapping("/{id}/action/{actionId}")
     @Transactional
     public RuleRepresentationModel deleteActionId(@PathVariable("id") long id,@PathVariable("actionId") long actionId) {
@@ -86,4 +89,15 @@ public class RuleController {
         return RepresentationModelConverterUtil.ruleToRuleModel(rule);
     }
 
-}
+    @PutMapping("/{id}/action")
+    @Transactional
+    public RuleRepresentationModel addActionToRule(@PathVariable("id") long id,
+        @Valid @RequestBody Action action) {
+        Rule rule = rulesRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Rule Not Found"));
+        rule.getActions().add(action);
+        return RepresentationModelConverterUtil.ruleToRuleModel(rule);
+    }
+
+
+
+    }

@@ -54,6 +54,18 @@ class RuleTestIT {
 				"   \"name\":\"Rule_2\",\n" +
 				"   \"priority\":1,\n" +
 				"   \"filter\":\"Grid_A\",\n" +
+				"		\"actions\":[" +
+				"                {" +
+				"                    \"type\":\"SMS\"," +
+				"                    \"data\":\"send SMS\"," +
+				"                    \"priority\":1" +
+				"                }," +
+				"                {" +
+				"                    \"type\":\"EMAIL\"," +
+				"                    \"data\":\"send EMAIL\"," +
+				"                    \"priority\":2" +
+				"                }" +
+				" ],"+
 				"   \"groupComposite\":{\n" +
 				"      \"logicalOperation\":\"OR\",\n" +
 				"      \"groupComposites\":[\n" +
@@ -104,13 +116,34 @@ class RuleTestIT {
 		assertThat(rulesRepository.findAll().size()).isEqualTo(currentRuleCount + 1);
 	}
 
+	@Test
+	public void addActionToRule() throws Exception {
+
+		int actionCnt = rulesRepository.findById(1L).get().getActions().size();
+		String body ="{\"type\":\"LED\",\"data\":\"blink\",\"priority\":1}";
+		testBody(webTestCli.put().uri(URI_GET_ALL_RULES+"/1/action")
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(Mono.just(body),String.class)
+				.exchange().expectStatus().isOk().expectBody());
+		assertThat(rulesRepository.findById(1L).get().getActions().size()).isEqualTo(actionCnt+1);
+	}
+
 
 	private void testBody(WebTestClient.BodyContentSpec body) {
+		String s = new String (body.returnResult().getResponseBody());
+		System.out.println(s);
 		body.jsonPath("$.id").isNotEmpty()
 				.jsonPath("$.name").isNotEmpty()
 				.jsonPath("$.priority").exists()
-				.jsonPath("$.filter").exists()
+				//.jsonPath("$.filter").exists()
 				.jsonPath("$.group.logicalOperation").exists()
+				//validate actions
+				.jsonPath("actions").exists()
+				.jsonPath("actions._embedded.actionList").isArray()
+				.jsonPath("actions._embedded.actionList[0].type").isNotEmpty()
+				.jsonPath("actions._embedded.actionList[0].data").isNotEmpty()
+				.jsonPath("actions._embedded.actionList[0].priority").isNumber()
+				.jsonPath("actions._embedded.actionList[0]._links.delete.href").isNotEmpty()
 				//validate groups
 				.jsonPath("$.group.groups._embedded.groupCompositeRepresentationModelList").isArray()
 				//validate group
