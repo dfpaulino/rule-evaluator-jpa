@@ -199,6 +199,8 @@ class ResJpaDemoApplicationTests {
 	}
 
 	private void testBody(WebTestClient.BodyContentSpec body) {
+		String s = new String (body.returnResult().getResponseBody());
+		System.out.println(s);
 		body.jsonPath("$.id").isNotEmpty()
 				.jsonPath("$.name").isNotEmpty()
 				.jsonPath("$.priority").exists()

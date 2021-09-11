@@ -16,5 +16,6 @@ public class SimpleRuleDto {
     private String name;
     private int priority;
     private String filter;
+    private boolean active;
     private List<Action> actions;
 }

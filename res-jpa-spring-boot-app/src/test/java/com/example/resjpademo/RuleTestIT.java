@@ -136,6 +136,7 @@ class RuleTestIT {
 				.jsonPath("$.name").isNotEmpty()
 				.jsonPath("$.priority").exists()
 				//.jsonPath("$.filter").exists()
+				.jsonPath("$.active").isBoolean()
 				.jsonPath("$.group.logicalOperation").exists()
 				//validate actions
 				.jsonPath("actions").exists()

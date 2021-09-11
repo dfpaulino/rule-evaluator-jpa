@@ -14,10 +14,11 @@ import org.springframework.hateoas.RepresentationModel;
  */
 @Getter @Setter
 public class RuleRepresentationModel extends RepresentationModel<RuleRepresentationModel> {
-    long id;
-    String name;
-    int priority;
-    CollectionModel<EntityModel<Action>> actions;
-    String filter;
-    GroupCompositeRepresentationModel group;
+    private long id;
+    private String name;
+    private int priority;
+    private CollectionModel<EntityModel<Action>> actions;
+    private String filter;
+    private boolean active = true;
+    private GroupCompositeRepresentationModel group;
 }

@@ -75,7 +75,7 @@ public class RulesParserJpaImpl implements RulesParser {
     @Override
     public Map<String, RuleDto> getRulesDto() {
         LOGGER.info("getting Rules");
-        return rulesRepository.findAll().stream()
+        return rulesRepository.findAll().stream().filter(rule -> rule.isActive())
                 .collect(
                         Collectors.toMap(
                                 Rule::getName,

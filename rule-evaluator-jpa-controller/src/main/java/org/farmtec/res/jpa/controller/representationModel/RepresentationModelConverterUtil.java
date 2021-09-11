@@ -77,6 +77,7 @@ public class RepresentationModelConverterUtil {
         .name(rule.getName())
         .priority(rule.getPriority())
         .filter(rule.getFilter())
+        .active(rule.isActive())
         //.actions(rule.getActions())
         .build();
     return EntityModel.of(simpleRuleDto,
@@ -89,6 +90,7 @@ public class RepresentationModelConverterUtil {
     ruleRepresentationModel.setName(rule.getName());
     ruleRepresentationModel.setPriority(rule.getPriority());
     ruleRepresentationModel.setFilter(rule.getFilter());
+    ruleRepresentationModel.setActive(rule.isActive());
     if(rule.getActions()!=null) {
       ruleRepresentationModel.setActions(getActions(rule.getActions(),rule.getId()));
     }

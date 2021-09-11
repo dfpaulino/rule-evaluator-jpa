@@ -164,6 +164,7 @@ class RuleControllerTest {
         .andExpect(jsonPath("$.content[0].name", containsString("Rule")))
         .andExpect(jsonPath("$.content[0].priority").isNumber())
         .andExpect(jsonPath("$.content[0].filter").exists())
+        .andExpect(jsonPath("$.content[0].active").isBoolean())
         .andExpect(jsonPath("$.content[0].links[0].rel", is("self")))
         .andExpect(jsonPath("$.content[0].links[0].href",
             containsString("http://localhost/rules")))
@@ -171,6 +172,7 @@ class RuleControllerTest {
         .andExpect(jsonPath("$.content[1].name").isString())
         .andExpect(jsonPath("$.content[1].name", containsString("Rule")))
         .andExpect(jsonPath("$.content[1].priority").isNumber())
+        .andExpect(jsonPath("$.content[1].active").isBoolean())
         .andExpect(jsonPath("$.content[1].links[0].rel", is("self")))
         .andExpect(jsonPath("$.content[1].links[0].href",
             containsString("http://localhost/rules")));
