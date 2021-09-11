@@ -98,6 +98,19 @@ public class RuleController {
         return RepresentationModelConverterUtil.ruleToRuleModel(rule);
     }
 
-
-
+    @PutMapping("/{id}/activate")
+    @Transactional
+    public void activateRule(@PathVariable("id") long id) {
+        Rule rule = rulesRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Rule Not Found"));
+        rule.setActive(true);
     }
+
+    @PutMapping("/{id}/deactivate")
+    @Transactional
+    public void deactivateRule(@PathVariable("id") long id) {
+        Rule rule = rulesRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Rule Not Found"));
+        rule.setActive(false);
+    }
+
+
+}
