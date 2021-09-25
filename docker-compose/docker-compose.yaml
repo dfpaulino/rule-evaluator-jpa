@@ -17,7 +17,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_APPLICATION_JSON: '{"spring.datasource.url":"jdbc:mysql://mysql:3306/test","spring.datasource.username":"test","spring.datasource.password":"test","spring.jpa.hibernate.ddl-auto":"none"}'
+            SPRING_APPLICATION_JSON: '{"spring.datasource.url":"jdbc:mysql://mysql:3306/test","spring.datasource.username":"test","spring.datasource.password":"test","spring.jpa.hibernate.ddl-auto":"none","spring.jpa.show-sql":"false","logging.level.org.farmtec.res.service":"INFO"}'
     depends_on:
       - mysql
     networks:
