@@ -10,7 +10,7 @@
 
 	<groupId>org.farmtec</groupId>
 	<artifactId>res-jpa-service</artifactId>
-	<version>1.1.1</version>
+	<version>1.1.2-SNAPSHOT</version>
 	<name>res-jpa-service</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>org.farmtec</groupId>
 			<artifactId>res-jpa-spring-boot-starter</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

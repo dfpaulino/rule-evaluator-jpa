@@ -4,7 +4,7 @@
 
     <groupId>org.farmtec</groupId>
     <artifactId>rule-evaluator-jpa-build</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <scm>
