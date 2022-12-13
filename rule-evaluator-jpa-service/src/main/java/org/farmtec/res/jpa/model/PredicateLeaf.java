@@ -2,6 +2,7 @@ package org.farmtec.res.jpa.model;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 /**
@@ -16,6 +17,7 @@ public class PredicateLeaf extends BaseTable {
     private String type;
     private String operation;
     private String tag;
+    @Column(name = "`value`")
     private String value;
 
     public PredicateLeaf updateFrom(PredicateLeaf p) {
