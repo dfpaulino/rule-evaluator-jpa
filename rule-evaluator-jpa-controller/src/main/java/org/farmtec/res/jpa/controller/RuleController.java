@@ -1,6 +1,6 @@
 package org.farmtec.res.jpa.controller;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import org.farmtec.res.jpa.controller.dto.SimpleRuleDto;
 import org.farmtec.res.jpa.controller.exception.ResourceNotFound;
 import org.farmtec.res.jpa.controller.representationModel.RepresentationModelConverterUtil;

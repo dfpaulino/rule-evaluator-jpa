@@ -2,8 +2,8 @@ package org.farmtec.res.jpa.model;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
 /**
  * Created by dp on 30/01/2021

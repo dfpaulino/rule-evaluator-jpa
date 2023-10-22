@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.farmtec</groupId>
         <artifactId>rule-evaluator-jpa-parent</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath>../rule-evaluator-jpa-parent</relativePath>
     </parent>
 
@@ -11,10 +11,10 @@
 
     <artifactId>res-jpa-spring-boot-starter</artifactId>
 
-    <properties>
+    <!--properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-    </properties>
+    </properties-->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -42,8 +42,8 @@
         </dependency>
 
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
             <optional>false</optional>
         </dependency>

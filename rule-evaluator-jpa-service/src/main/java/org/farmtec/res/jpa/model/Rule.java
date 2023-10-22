@@ -3,7 +3,7 @@ package org.farmtec.res.jpa.model;
 import java.util.List;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * Created by dp on 31/01/2021
